@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.XR;
-using Microsoft.MixedReality.Toolkit.UI;
+//using Microsoft.MixedReality.Toolkit.UI;
 
 [RequireComponent(typeof(SpatialAnchorManager))]
 public class ASAScript : MonoBehaviour
@@ -105,7 +105,8 @@ public class ASAScript : MonoBehaviour
             _createdAnchorIDs.Add(cloudSpatialAnchor.Identifier);
             spatialAnchor.GetComponent<MeshRenderer>().material.color = Color.green;
 
-            Dialog.Open(DialogPrefab, DialogButtonType.OK, "Anchor created", $"Anchor stored to cloud with ID: {cloudSpatialAnchor.Identifier}", true);
+            //Dialog.Open(DialogPrefab, DialogButtonType.OK, "Anchor created", $"Anchor stored to cloud with ID: {cloudSpatialAnchor.Identifier}", true);
+            Debug.Log( "Anchor stored to cloud with ID:" + cloudSpatialAnchor.Identifier);
 
         }
         catch (Exception exception)
