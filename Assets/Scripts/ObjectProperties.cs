@@ -5,9 +5,13 @@ using UnityEngine;
 
 public class ObjectProperties : MonoBehaviour
 {
+    public bool startShowing;
     public void Start()
     {
-        gameObject.SetActive(false);
+        if (!startShowing)
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     public void Disappear()
