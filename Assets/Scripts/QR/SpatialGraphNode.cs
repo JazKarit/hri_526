@@ -66,6 +66,7 @@ namespace Microsoft.MixedReality.SampleQRCodes.WindowsXR
                 translation = new Vector3(translation1.X, translation1.Y, translation1.Z);
                 rotation = new Quaternion(rotation1.X, rotation1.Y, rotation1.Z, rotation1.W);
                 pose = new Pose(translation, rotation);
+
                 return true;
             }
 #endif
