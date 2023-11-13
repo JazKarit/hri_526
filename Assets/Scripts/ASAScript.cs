@@ -6,6 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.XR;
+using Unity.Robotics.ROSTCPConnector;
+using Unity.Robotics.ROSTCPConnector.ROSGeometry;
+using StringMessage = RosMessageTypes.Std.StringMsg;
 //using Microsoft.MixedReality.Toolkit.UI;
 
 [RequireComponent(typeof(SpatialAnchorManager))]
@@ -55,7 +58,13 @@ public class ASAScript : MonoBehaviour
         //_spatialAnchorManager.LogDebug += (sender, args) => SendStringMessage($"ASA - Debug: {args.Message}");
         _spatialAnchorManager.Error += (sender, args) => Debug.LogError($"ASA - Error: {args.ErrorMessage}");
         _spatialAnchorManager.AnchorLocated += SpatialAnchorManager_AnchorLocated;
+        ROSConnection.GetOrCreateInstance().Subscribe<StringMessage>("/ASA/target", UpdateTarget);
+        LocateAnchor();
+    }
 
+    void UpdateTarget(StringMessage target)
+    {
+        anchorID = target.data;
         LocateAnchor();
     }
 
