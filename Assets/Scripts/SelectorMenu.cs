@@ -8,6 +8,15 @@ public class SelectorMenu : MonoBehaviour
 {
 
     public GameObject selector;
+    public GameObject taskStateManager;
+    public GameObject cursor;
+
+    //helper function
+    private StateManager.SelectorType getInterface()
+    {
+        return StateManager.instance.selectorType;
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -21,11 +30,31 @@ public class SelectorMenu : MonoBehaviour
         
     }
 
+  
+
+    public void MoveAndHold()
+    {
+        if (selector != null)
+        {
+            TaskStateManager.instance.GetComponent<TaskStateManager>().digitalTwinObject = selector;
+            TaskStateManager.instance.GetComponent<TaskStateManager>().SendTargetPosition();
+        }
+        this.Cancel();
+        this.Disappear();
+    }
+
     public void Cancel()
     {
-       if (selector != null)
+       if (selector != null &&  !(this.getInterface() == StateManager.SelectorType.PointSelect || this.getInterface() == StateManager.SelectorType.Gaze))
         {
             selector.GetComponent<Selector>().Cancel();
+        } else
+        {
+            if (this.getInterface() == StateManager.SelectorType.PointSelect || this.getInterface() == StateManager.SelectorType.Gaze)
+            {
+                selector.GetComponent<Cursor>().Cancel();
+            }
+            
         }
     }
 

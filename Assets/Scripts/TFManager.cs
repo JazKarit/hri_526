@@ -13,13 +13,24 @@ public class TFManager : MonoBehaviour
     {
         public string name;
         public GameObject gameObject;
+        public GameObject selector;
+        public bool selectorLocked = false;
     }
 
     public TFObject[] subscribers;
+
+    public static TFManager instance; //This is a singleton
+
+
     // Start is called before the first frame update
     void Start()
     {
         ROSConnection.GetOrCreateInstance().Subscribe<TFMessage>("/objects", UpdatePoses);
+        if (instance != null)
+        {
+            Debug.Log("Multiple of this singleton");
+        }
+        instance = this;
     }
 
     void UpdatePoses(TFMessage TFMsg)
@@ -33,6 +44,10 @@ public class TFManager : MonoBehaviour
                 {
                     found = true;
                     tfo.gameObject.SetActive(true);
+                    if (tfo.selector != null && !tfo.selectorLocked)
+                    {
+                        tfo.selector.SetActive(true);
+                    }
                     Quaternion uq = transformStampedMsg.transform.rotation.From<FLU>();
                     tfo.gameObject.transform.localRotation = new Quaternion(-uq.z, uq.y, uq.x, uq.w);
                     tfo.gameObject.transform.localPosition = new Vector3(-(float)transformStampedMsg.transform.translation.x, (float)transformStampedMsg.transform.translation.z, -(float)transformStampedMsg.transform.translation.y);
@@ -42,9 +57,37 @@ public class TFManager : MonoBehaviour
             if (!found)
             {
                 tfo.gameObject.SetActive(false);
+                if (tfo.selector != null)
+                {
+                    tfo.selector.SetActive(false);
+                }
             }
         }
 
+    }
+
+    //Disable all selectors besides specified
+    public void LockSelectors(GameObject selector)
+    {
+        foreach (TFObject tfo in subscribers)
+        {
+            if (tfo.selector == null) continue;
+            if (tfo.selector != selector)
+            {
+                tfo.selectorLocked = true;
+                tfo.selector.SetActive(false);
+            }
+        }
+    }
+
+
+    //Enable all selectors
+    public void UnlockSelectors()
+    {
+        foreach (TFObject tfo in subscribers)
+        {
+            tfo.selectorLocked = false;
+        }
     }
 
     // Update is called once per frame

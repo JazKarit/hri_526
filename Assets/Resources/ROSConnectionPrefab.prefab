@@ -52,4 +52,4 @@ MonoBehaviour:
   m_ShowHUD: 1
   m_TFTopics:
   - /tf
-  listenForTFMessages: 1
+  listenForTFMessages: 0

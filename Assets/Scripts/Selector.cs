@@ -4,14 +4,9 @@ using UnityEngine;
 
 public class Selector : MonoBehaviour
 {
-    public enum SelectorType
-    {
-        Drag,
-        Gaze,
-        PointnClick
-    }
 
-    public SelectorType mode = SelectorType.Drag;
+
+
 
     public GameObject real;
 
@@ -20,7 +15,16 @@ public class Selector : MonoBehaviour
     public bool pinched = false;
     public bool showing = false;
 
+    private bool tracking = false;
+
     public GameObject menu;
+
+    public Material digitalTwinMat;
+    public Material digitalTwinSelectedMat;
+
+
+    public static GameObject selectedObject = null;
+
 
     // Start is called before the first frame update
     void Start()
@@ -43,8 +47,44 @@ public class Selector : MonoBehaviour
             //Update Line
             GetComponent<LineRenderer>().SetPosition(0, real.transform.position);
             GetComponent<LineRenderer>().SetPosition(1, transform.position);
+            if (tracking)
+            {
+                TaskStateManager.instance.GetComponent<TaskStateManager>().digitalTwinObject = gameObject;
+                TaskStateManager.instance.GetComponent<TaskStateManager>().SendTargetPosition();
+            }
+        }else
+        {
+            transform.position = real.transform.position;
+            transform.rotation = real.transform.rotation;
         }
         
+    }
+
+    public void SetSelected(bool state)
+    {
+        if (state)
+        {
+            if (selectedObject != null)
+            {
+                selectedObject.GetComponent<Selector>().SetSelected(false);
+            }
+            selectedObject = gameObject;
+            real.GetComponent<Renderer>().material = digitalTwinSelectedMat;
+        }
+        else
+        {
+            if (selectedObject == gameObject)
+            {
+                selectedObject = null;
+            }
+            real.GetComponent<Renderer>().material = digitalTwinMat;
+        }
+    }
+
+    //helper function
+    private StateManager.SelectorType getInterface()
+    {
+        return StateManager.instance.selectorType;
     }
 
     public void Cancel()
@@ -54,22 +94,65 @@ public class Selector : MonoBehaviour
         transform.rotation = real.transform.rotation;
     }
 
+    public void Lock()
+    {
+        TFManager.instance.LockSelectors(gameObject);
+        StateManager.instance.lockInterface = true; // Do not allow interface changing during selector actions for saftey
+    }
+
+    public void Unlock()
+    {
+        TFManager.instance.UnlockSelectors();
+        StateManager.instance.lockInterface = false;
+    }
+
     public void StartManLong()
     {
-        this.pinched = true;
-        this.Show();
+        this.Lock();
+        
+        if (this.getInterface() == StateManager.SelectorType.Drag || this.getInterface() == StateManager.SelectorType.DragSelect)
+        {
+            this.pinched = true;
+
+            this.Show();
+            this.tracking = true;
+        }
+        if (this.getInterface() == StateManager.SelectorType.PointSelect || this.getInterface() == StateManager.SelectorType.Gaze)
+        {
+            this.Cancel();
+            if (selectedObject == gameObject)
+            {
+                this.SetSelected(false);
+                menu.GetComponent<SelectorMenu>().Cancel();
+                this.Unlock();
+            } else
+            {
+                this.SetSelected(true);
+                
+            }
+        }
     }
 
     public void EndManLong()
     {
         this.pinched = false;
-        this.FocusMenu();
+        
+        if (this.getInterface() == StateManager.SelectorType.DragSelect)
+        {
+            this.FocusMenu();
+        }
+            if (this.getInterface() == StateManager.SelectorType.Drag)
+        {
+            this.tracking = false;
+            this.Cancel();
+        }
+        this.Unlock();
     }
 
     public void FocusMenu()
     {
         menu.GetComponent<SelectorMenu>().selector = this.gameObject;
-        menu.GetComponent<SelectorMenu>().ApearAboveSelector();
+        menu.GetComponent<SelectorMenu>().AppearOnFace();
     }
 
     public void Show()
