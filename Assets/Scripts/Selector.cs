@@ -15,6 +15,8 @@ public class Selector : MonoBehaviour
     public bool pinched = false;
     public bool showing = false;
 
+    public bool keepAboveTable = true;
+
     private bool tracking = false;
 
     public GameObject menu;
@@ -44,14 +46,22 @@ public class Selector : MonoBehaviour
 
         if (showing)
         {
+            GameObject table = GameObject.Find("Table");
+            float midOffset = GetComponent<Renderer>().bounds.extents.y;
+            if (transform.position.y - midOffset < table.transform.position.y)
+            {
+                transform.position = new Vector3(transform.position.x, table.transform.position.y + midOffset, transform.position.z);
+            }
             //Update Line
             GetComponent<LineRenderer>().SetPosition(0, real.transform.position);
             GetComponent<LineRenderer>().SetPosition(1, transform.position);
+
             if (tracking)
             {
                 TaskStateManager.instance.GetComponent<TaskStateManager>().digitalTwinObject = gameObject;
-                TaskStateManager.instance.GetComponent<TaskStateManager>().SendTargetPosition();
+                //TaskStateManager.instance.GetComponent<TaskStateManager>().SendTargetPosition();
             }
+
         }else
         {
             transform.position = real.transform.position;
@@ -108,7 +118,7 @@ public class Selector : MonoBehaviour
 
     public void StartManLong()
     {
-        this.Lock();
+        
         
         if (this.getInterface() == StateManager.SelectorType.Drag || this.getInterface() == StateManager.SelectorType.DragSelect)
         {

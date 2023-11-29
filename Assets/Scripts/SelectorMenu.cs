@@ -8,7 +8,6 @@ public class SelectorMenu : MonoBehaviour
 {
 
     public GameObject selector;
-    public GameObject taskStateManager;
     public GameObject cursor;
 
     //helper function
@@ -36,10 +35,11 @@ public class SelectorMenu : MonoBehaviour
     {
         if (selector != null)
         {
-            TaskStateManager.instance.GetComponent<TaskStateManager>().digitalTwinObject = selector;
-            TaskStateManager.instance.GetComponent<TaskStateManager>().SendTargetPosition();
+            TaskStateManager.instance.digitalTwinObject = selector;
+            TaskStateManager.instance.SetTarget();
+            TaskStateManager.instance.SendTargetPosition();
+            //TaskStateManager.instance.GetComponent<TaskStateManager>().GoTo();
         }
-        this.Cancel();
         this.Disappear();
     }
 

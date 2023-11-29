@@ -113,7 +113,7 @@ public class Cursor : MonoBehaviour
     public void TableTap()
     {
         //Dont make cursor if there isnt an active selection
-        if (Selector.selectedObject == null)
+        if (Selector.selectedObject == null || this.getInterface() != StateManager.SelectorType.PointSelect)
         {
             return;
         }

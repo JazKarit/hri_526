@@ -9,6 +9,7 @@ using UnityEngine.XR;
 using Unity.Robotics.ROSTCPConnector;
 using Unity.Robotics.ROSTCPConnector.ROSGeometry;
 using StringMessage = RosMessageTypes.Std.StringMsg;
+using  RosMessageTypes.Std;
 //using Microsoft.MixedReality.Toolkit.UI;
 
 [RequireComponent(typeof(SpatialAnchorManager))]
@@ -110,6 +111,8 @@ public class ASAScript : MonoBehaviour
             }
 
             Debug.Log($"ASA - Saved cloud anchor with ID: {cloudSpatialAnchor.Identifier}");
+            StringMsg stringMessage = new StringMsg(cloudSpatialAnchor.Identifier);
+            ROSConnection.GetOrCreateInstance().Publish("/ASA/target", stringMessage);
             _foundOrCreatedAnchorGameObjects.Add(spatialAnchor);
             _createdAnchorIDs.Add(cloudSpatialAnchor.Identifier);
             spatialAnchor.GetComponent<MeshRenderer>().material.color = Color.green;
