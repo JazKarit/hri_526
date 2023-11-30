@@ -9,6 +9,7 @@ public class SelectorMenu : MonoBehaviour
 
     public GameObject selector;
     public GameObject cursor;
+    
 
     //helper function
     private StateManager.SelectorType getInterface()
@@ -29,15 +30,43 @@ public class SelectorMenu : MonoBehaviour
         
     }
 
-  
+
+    public void MoveAndDrop()
+    {
+        if (!(this.getInterface() == StateManager.SelectorType.PointSelect || this.getInterface() == StateManager.SelectorType.Gaze))
+        {
+            if (selector != null)
+            {
+                TaskStateManager.instance.digitalTwinObject = selector;
+                if (GameHandler.instance.contenderSelector == selector)
+                {
+                    GameHandler.instance.PlaceObject(selector.transform.position);
+                }
+
+            }
+            this.Disappear();
+            this.Cancel();
+        } else
+        {
+            if (Selector.selectedObject != null)
+            {
+                if (GameHandler.instance.contenderSelector == Selector.selectedObject)
+                {
+                    GameHandler.instance.PlaceObject(selector.transform.position);
+                }
+            }
+            this.Disappear();
+            this.Cancel();
+        }
+    }
 
     public void MoveAndHold()
     {
         if (selector != null)
         {
             TaskStateManager.instance.digitalTwinObject = selector;
-            TaskStateManager.instance.SetTarget();
-            TaskStateManager.instance.SendTargetPosition();
+            //TaskStateManager.instance.SetTarget();
+            //TaskStateManager.instance.SendTargetPosition();
             //TaskStateManager.instance.GetComponent<TaskStateManager>().GoTo();
         }
         this.Disappear();

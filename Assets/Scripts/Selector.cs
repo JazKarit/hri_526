@@ -153,6 +153,11 @@ public class Selector : MonoBehaviour
         }
             if (this.getInterface() == StateManager.SelectorType.Drag)
         {
+            if (GameHandler.instance.contenderSelector == gameObject)
+            {
+                GameHandler.instance.PlaceObject(gameObject.transform.position);
+            }
+            
             this.tracking = false;
             this.Cancel();
         }

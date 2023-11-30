@@ -45,8 +45,11 @@ public class StateManager : MonoBehaviour
         string[] args = target.data.ToLower().Split(' ');
         switch (args[0])
         {
+            case "trial":
+                if (args[1].Equals("start")) GameHandler.instance.StartTrial();
+                break;
             case "selector_type":
-                if (lockInterface) break; //Do not allow chaning interface if this semaphore is true
+                if (lockInterface && false) break; //Do not allow chaning interface if this semaphore is true
                 if (args[1].Equals("drag")) selectorType = SelectorType.Drag;
                 if (args[1].Equals("gaze")) selectorType = SelectorType.Gaze;
                 if (args[1].Equals("drag_select")) selectorType = SelectorType.DragSelect;

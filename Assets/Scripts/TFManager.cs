@@ -15,6 +15,7 @@ public class TFManager : MonoBehaviour
         public GameObject gameObject;
         public GameObject selector;
         public bool selectorLocked = false;
+        public bool selectable = false;
     }
 
     public TFObject[] subscribers;
@@ -47,6 +48,7 @@ public class TFManager : MonoBehaviour
                     if (tfo.selector != null && !tfo.selectorLocked)
                     {
                         tfo.selector.SetActive(true);
+                        tfo.selectable = true;
                     }
                     Quaternion uq = transformStampedMsg.transform.rotation.From<FLU>();
                     tfo.gameObject.transform.localRotation = new Quaternion(-uq.z, uq.y, uq.x, uq.w);
@@ -57,6 +59,7 @@ public class TFManager : MonoBehaviour
             if (!found)
             {
                 tfo.gameObject.SetActive(false);
+                tfo.selectable = false;
                 if (tfo.selector != null)
                 {
                     tfo.selector.SetActive(false);
