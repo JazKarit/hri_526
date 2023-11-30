@@ -9,7 +9,8 @@ public class SelectorMenu : MonoBehaviour
 
     public GameObject selector;
     public GameObject cursor;
-    
+    public static SelectorMenu instance;
+
 
     //helper function
     private StateManager.SelectorType getInterface()
@@ -22,6 +23,11 @@ public class SelectorMenu : MonoBehaviour
     void Start()
     {
         this.Disappear();
+        if (instance != null)
+        {
+            Debug.Log("Singleton error on selector menu");
+        }
+        instance = this;
     }
 
     // Update is called once per frame
@@ -30,10 +36,39 @@ public class SelectorMenu : MonoBehaviour
         
     }
 
+    public void MoveAndDropForce()
+    {
+        if (!(this.getInterface() == StateManager.SelectorType.PointSelect || this.getInterface() == StateManager.SelectorType.Point || this.getInterface() == StateManager.SelectorType.GazeSelect || this.getInterface() == StateManager.SelectorType.Gaze))
+        {
+            if (selector != null)
+            {
+                TaskStateManager.instance.digitalTwinObject = selector;
+                if (GameHandler.instance.contenderSelector == selector)
+                {
+                    GameHandler.instance.PlaceObject(selector.transform.position);
+                }
+
+            }
+            this.Disappear();
+            this.Cancel();
+        }
+        else
+        {
+            if (Selector.selectedObject != null)
+            {
+                if (GameHandler.instance.contenderSelector == Selector.selectedObject)
+                {
+                    GameHandler.instance.PlaceObject(selector.transform.position);
+                }
+            }
+            this.Disappear();
+            this.Cancel();
+        }
+    }
 
     public void MoveAndDrop()
     {
-        if (!(this.getInterface() == StateManager.SelectorType.PointSelect || this.getInterface() == StateManager.SelectorType.Gaze))
+        if (!(this.getInterface() == StateManager.SelectorType.PointSelect || this.getInterface() == StateManager.SelectorType.GazeSelect))
         {
             if (selector != null)
             {
@@ -74,9 +109,10 @@ public class SelectorMenu : MonoBehaviour
 
     public void Cancel()
     {
-       if (selector != null &&  !(this.getInterface() == StateManager.SelectorType.PointSelect || this.getInterface() == StateManager.SelectorType.Gaze))
+       if (selector != null && selector.GetComponent<Selector>() != null)
         {
             selector.GetComponent<Selector>().Cancel();
+
         } else
         {
             if (this.getInterface() == StateManager.SelectorType.PointSelect || this.getInterface() == StateManager.SelectorType.Gaze)

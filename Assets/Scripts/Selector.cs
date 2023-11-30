@@ -127,7 +127,7 @@ public class Selector : MonoBehaviour
             this.Show();
             this.tracking = true;
         }
-        if (this.getInterface() == StateManager.SelectorType.PointSelect || this.getInterface() == StateManager.SelectorType.Gaze)
+        if (this.getInterface() == StateManager.SelectorType.Point || this.getInterface() == StateManager.SelectorType.PointSelect || this.getInterface() == StateManager.SelectorType.Gaze || this.getInterface() == StateManager.SelectorType.GazeSelect)
         {
             this.Cancel();
             if (selectedObject == gameObject)

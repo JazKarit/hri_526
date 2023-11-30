@@ -41,6 +41,7 @@ public class GameHandler : MonoBehaviour
             Debug.Log("Singleton error game manager");
         }
         instance = this;
+        pointer.SetActive(false);
     }
 
     public void StartTrial()
@@ -69,9 +70,13 @@ public class GameHandler : MonoBehaviour
             avgError += e;
         }
         avgError /= errors.Count;
+        errors.Sort();
+        if (errors.Count < 1) ;
+        float medError = errors[errors.Count / 2];
         string statsString = "";
         statsString += "placements: " + placments;
         statsString += ",  avg error: " + avgError;
+        statsString += ",  med error: " + medError;
         statsString += ",  min error: " + minError;
         statsString += ",  max error: " + maxError;
         StringMsg stats = new StringMsg(statsString);
@@ -134,7 +139,8 @@ public class GameHandler : MonoBehaviour
         }
         if (testFlag)
         {
-            StartTrial();
+            //StartTrial();
+            PlaceTarget();
             testFlag = false;
         }
     }
