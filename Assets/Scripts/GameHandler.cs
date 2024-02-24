@@ -1,8 +1,12 @@
 using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Robotics.ROSTCPConnector;
 using RosMessageTypes.Std;
+using RosMessageTypes.Geometry;
+//using RosMessageTypes.Scripts;
+using Unity.Robotics.ROSTCPConnector.ROSGeometry;
 
 public class GameHandler : MonoBehaviour
 {
@@ -15,8 +19,19 @@ public class GameHandler : MonoBehaviour
     public float trialLength = 60.0f;
     public float elapsed = 0.0f;
     public GameObject pointer;
+    public GameObject armOrigin;
+    public GameObject robotBase;
+    public GameObject blueCup;
+
+    public bool active = false;
+    public bool watchingCup = false;
+
+    public bool testButton = false;
 
     public bool testFlag;
+
+    public GameObject pourDial;
+    public GameObject gripper;
 
 
     //Statistics (public for debugging)
@@ -35,6 +50,8 @@ public class GameHandler : MonoBehaviour
 
         ros = ROSConnection.GetOrCreateInstance();
         ros.RegisterPublisher<StringMsg>("/statistics");
+        ros.RegisterPublisher<Float32Msg>("/arm/pour");
+        ros.RegisterPublisher<BoolMsg>("/arm/pour_toggle");
 
         if (instance != null)
         {
@@ -42,6 +59,9 @@ public class GameHandler : MonoBehaviour
         }
         instance = this;
         pointer.SetActive(false);
+        ROSConnection.GetOrCreateInstance().RegisterPublisher<PoseMsg>("arm/go_to");
+        ROSConnection.GetOrCreateInstance().RegisterPublisher<PoseArrayMsg>("arm/pickplace");
+        ROSConnection.GetOrCreateInstance().RegisterPublisher<PoseArrayMsg>("arm/pickhold");
     }
 
     public void StartTrial()
@@ -111,9 +131,41 @@ public class GameHandler : MonoBehaviour
         
     }
 
+    public void PickPlace(Vector3 source, Vector3 target)
+    {
+        Vector3 relTarget = armOrigin.transform.InverseTransformPoint(target);
+        Vector3 rosTarget = new Vector3(relTarget.x, relTarget.z, relTarget.y + 0.05f);
+
+        Vector3 relSource = armOrigin.transform.InverseTransformPoint(source);
+        Vector3 rosSource = new Vector3(relSource.x, relSource.z, relSource.y + 0.05f);
+        Debug.Log("pickplace");
+        ROSPublisher.instance.DoublePose("arm/pickplace", rosSource, rosTarget, new Quaternion(), new Quaternion());
+    }
+
+    public void PickHold(Vector3 source, Vector3 target)
+    {
+        Vector3 relTarget = armOrigin.transform.InverseTransformPoint(target);
+        Vector3 rosTarget = new Vector3(relTarget.x, relTarget.z, relTarget.y + 0.05f);
+
+        Vector3 relSource = armOrigin.transform.InverseTransformPoint(source);
+        Vector3 rosSource = new Vector3(relSource.x, relSource.z, relSource.y + 0.05f);
+        Debug.Log("pickhold");
+        ROSPublisher.instance.DoublePose("arm/pickhold", rosSource, rosTarget, new Quaternion(), new Quaternion());
+    }
+
+
+
     public void PlaceObject(Vector3 location)
     {
-        if (!running) return;
+        Debug.Log("placed");
+        if (!running)
+        {
+            Debug.Log("real");
+            Vector3 relLocation = armOrigin.transform.InverseTransformPoint(location);
+            Debug.Log(relLocation.x + ", "+ relLocation.y + ", " + relLocation.z);
+            ROSPublisher.instance.Pose("arm/go_to", new Vector3(relLocation.x, relLocation.z, relLocation.y + 0.10f), new Quaternion());
+            return;
+        }
         float tx = target.transform.position.x;
         float tz = target.transform.position.z;
         float ox = location.x;
@@ -123,6 +175,48 @@ public class GameHandler : MonoBehaviour
         placments++;
         PlaceTarget();
         ChooseContender();
+    }
+
+    public void SpeechEnough()
+    {
+        active = false;
+        PourToggle(false);
+    }
+
+    public void SpeechPour()
+    {
+        PourToggle(true);
+    }
+
+    public void PourSet(float angle)
+    {
+        Debug.Log("Pouring: " + angle);
+        ros.Publish("/arm/pour", new Float32Msg(angle));
+    }
+
+    public void PourToggle(bool toggle)
+    {
+        ros.Publish("/arm/pour_toggle", new BoolMsg(toggle));
+        pourDial.SetActive(toggle);
+        if (toggle)
+        {
+            pourDial.transform.position = gripper.transform.position;
+            pourDial.transform.eulerAngles = new Vector3(0, gripper.transform.eulerAngles.y, pourDial.transform.eulerAngles.z);
+        }
+    }
+
+    
+
+    public void SpeachTask()
+    {
+        active = true;
+        watchingCup = true;
+    }
+
+    public void objectStop()
+    {
+        Debug.Log("stopped");
+
     }
 
 
@@ -143,5 +237,13 @@ public class GameHandler : MonoBehaviour
             PlaceTarget();
             testFlag = false;
         }
+
+        if (testButton)
+        {
+            SpeechPour();
+            testButton = false;
+        }
+
+
     }
 }

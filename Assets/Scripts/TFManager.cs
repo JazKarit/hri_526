@@ -53,6 +53,10 @@ public class TFManager : MonoBehaviour
                     Quaternion uq = transformStampedMsg.transform.rotation.From<FLU>();
                     tfo.gameObject.transform.localRotation = new Quaternion(-uq.z, uq.y, uq.x, uq.w);
                     tfo.gameObject.transform.localPosition = new Vector3(-(float)transformStampedMsg.transform.translation.x, (float)transformStampedMsg.transform.translation.z, -(float)transformStampedMsg.transform.translation.y);
+                    if (tfo.gameObject.GetComponent<VelocityTracker>() != null)
+                    {
+                        tfo.gameObject.GetComponent<VelocityTracker>().PositionUpdated();
+                    }
                     break;
                 }
             }

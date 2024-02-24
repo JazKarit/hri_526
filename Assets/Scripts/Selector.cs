@@ -9,6 +9,7 @@ public class Selector : MonoBehaviour
 
 
     public GameObject real;
+    public GameObject handle;
 
     public float matchTreshold = 0.05f;
 
@@ -143,6 +144,15 @@ public class Selector : MonoBehaviour
         }
     }
 
+    public void GrabHome()
+    {
+        if (GameHandler.instance.active && GameHandler.instance.watchingCup)
+        {
+            GameHandler.instance.PickHold(handle.transform.position, new Vector3(handle.transform.position.x, handle.transform.position.y + 0.2f, handle.transform.position.z));
+            GameHandler.instance.watchingCup = false;
+        }
+    }
+
     public void EndManLong()
     {
         this.pinched = false;
@@ -153,9 +163,17 @@ public class Selector : MonoBehaviour
         }
             if (this.getInterface() == StateManager.SelectorType.Drag)
         {
-            if (GameHandler.instance.contenderSelector == gameObject)
+            if (GameHandler.instance.contenderSelector == gameObject || true)   //For testing
             {
-                GameHandler.instance.PlaceObject(gameObject.transform.position);
+                if (handle != null)
+                {
+                    GameHandler.instance.PickPlace(handle.transform.position, gameObject.transform.position);
+                }
+                else
+                {
+                    GameHandler.instance.PickPlace(real.transform.position, gameObject.transform.position);
+                }
+                
             }
             
             this.tracking = false;

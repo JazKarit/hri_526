@@ -6,6 +6,7 @@ using UnityEngine;
 public class ObjectProperties : MonoBehaviour
 {
     public bool startShowing;
+   
     public void Start()
     {
         if (!startShowing)
