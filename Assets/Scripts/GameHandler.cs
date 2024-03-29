@@ -22,6 +22,7 @@ public class GameHandler : MonoBehaviour
     public GameObject armOrigin;
     public GameObject robotBase;
     public GameObject blueCup;
+    public GameObject grabAdjuster;
 
     public bool active = false;
     public bool watchingCup = false;
@@ -32,6 +33,8 @@ public class GameHandler : MonoBehaviour
 
     public GameObject pourDial;
     public GameObject gripper;
+
+    public GameObject pourAdjuster;
 
 
     //Statistics (public for debugging)
@@ -62,6 +65,20 @@ public class GameHandler : MonoBehaviour
         ROSConnection.GetOrCreateInstance().RegisterPublisher<PoseMsg>("arm/go_to");
         ROSConnection.GetOrCreateInstance().RegisterPublisher<PoseArrayMsg>("arm/pickplace");
         ROSConnection.GetOrCreateInstance().RegisterPublisher<PoseArrayMsg>("arm/pickhold");
+        ROSConnection.GetOrCreateInstance().Subscribe<StringMsg>("/unity/commands", CommandRecived);
+    }
+
+    public void CommandRecived(StringMsg msg)
+    {
+        switch (msg.data)
+        {
+            case "blue_cup grabbed":
+                pourAdjuster.SetActive(true);
+                break;
+            case "arm hover":
+                grabAdjuster.GetComponent<GrabAdjuster>().Begin();
+                break;
+        }
     }
 
     public void StartTrial()
@@ -179,7 +196,7 @@ public class GameHandler : MonoBehaviour
 
     public void SpeechEnough()
     {
-        active = false;
+        RobotActions.instance.state = RobotActions.RobotState.IDLE;
         PourToggle(false);
     }
 
@@ -210,6 +227,7 @@ public class GameHandler : MonoBehaviour
     public void SpeachTask()
     {
         active = true;
+        RobotActions.instance.state = RobotActions.RobotState.PICK_ON_MOVE;
         watchingCup = true;
     }
 
@@ -234,7 +252,7 @@ public class GameHandler : MonoBehaviour
         if (testFlag)
         {
             //StartTrial();
-            PlaceTarget();
+            grabAdjuster.GetComponent<GrabAdjuster>().Begin();
             testFlag = false;
         }
 
