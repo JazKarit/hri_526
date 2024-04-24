@@ -21,7 +21,9 @@ public class StateManager : MonoBehaviour
     {
         Drag,
         Gaze,
+        Point,
         DragSelect,
+        GazeSelect,
         PointSelect
     }
 
@@ -39,20 +41,35 @@ public class StateManager : MonoBehaviour
         instance = this;
     }
 
+    void SetInterface(SelectorType s)
+    {
+        Cursor.instance.Cancel();
+        SelectorMenu.instance.Cancel();
+        if (Selector.selectedObject != null && Selector.selectedObject.GetComponent<Selector>() != null)
+        {
+            Selector.selectedObject.GetComponent<Selector>().SetSelected(false);
+        }
+        instance.selectorType = s;
+}
+
     void ReciveCommand(StringMessage target)
     {
         Debug.Log(target.data);
         string[] args = target.data.ToLower().Split(' ');
         switch (args[0])
         {
-            case "selector_type":
-                if (lockInterface) break; //Do not allow chaning interface if this semaphore is true
-                if (args[1].Equals("drag")) selectorType = SelectorType.Drag;
-                if (args[1].Equals("gaze")) selectorType = SelectorType.Gaze;
-                if (args[1].Equals("drag_select")) selectorType = SelectorType.DragSelect;
-                if (args[1].Equals("point_select")) selectorType = SelectorType.PointSelect;
+            case "trial":
+                if (args[1].Equals("start")) GameHandler.instance.StartTrial();
                 break;
-
+            case "selector_type":
+                if (lockInterface && false) break; //Do not allow chaning interface if this semaphore is true
+                if (args[1].Equals("drag")) SetInterface(SelectorType.Drag);
+                if (args[1].Equals("gaze")) SetInterface(SelectorType.Gaze);
+                if (args[1].Equals("point")) SetInterface(SelectorType.Point);
+                if (args[1].Equals("drag_select")) SetInterface(SelectorType.DragSelect);
+                if (args[1].Equals("point_select")) SetInterface(SelectorType.PointSelect);
+                if (args[1].Equals("gaze_select")) SetInterface(SelectorType.GazeSelect);
+                break;
             case "hide":
                 if (args[1].Equals("lables"))
                 {

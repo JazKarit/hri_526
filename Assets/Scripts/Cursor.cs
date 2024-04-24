@@ -28,7 +28,7 @@ public class Cursor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (this.getInterface() == StateManager.SelectorType.Gaze)
+        if (this.getInterface() == StateManager.SelectorType.Gaze || this.getInterface() == StateManager.SelectorType.GazeSelect)
         {
             RaycastHit hitInfo;
             if (Physics.Raycast(
@@ -55,7 +55,7 @@ public class Cursor : MonoBehaviour
 
     public void GazeClick()
     {
-        if (this.getInterface() == StateManager.SelectorType.Gaze)
+        if (this.getInterface() == StateManager.SelectorType.Gaze || this.getInterface() == StateManager.SelectorType.GazeSelect)
         {
             Debug.Log("Voice Select");
             RaycastHit hitInfo;
@@ -72,11 +72,23 @@ public class Cursor : MonoBehaviour
                     hitInfo.collider.gameObject.GetComponent<Selector>().StartManLong();
                 } else if (Selector.selectedObject != null)
                 {
-                    this.Show();
+                    
                     gameObject.transform.position = hitInfo.point;
                     GetComponent<LineRenderer>().SetPosition(0, Selector.selectedObject.transform.position);
                     GetComponent<LineRenderer>().SetPosition(1, transform.position);
-                    this.FocusMenu();
+
+                    if (this.getInterface() == StateManager.SelectorType.Gaze) //Select or non select interface
+                    {
+                        menu.GetComponent<SelectorMenu>().selector = this.gameObject;
+                        SelectorMenu.instance.MoveAndDropForce();
+                        this.Hide();
+                    }
+                    else
+                    {
+                        this.Show();
+                        this.FocusMenu();
+                    }
+                    
                 }
                 // If the Raycast has succeeded and hit a hologram
                 // hitInfo's point represents the position being gazed at
@@ -113,7 +125,7 @@ public class Cursor : MonoBehaviour
     public void TableTap()
     {
         //Dont make cursor if there isnt an active selection
-        if (Selector.selectedObject == null || this.getInterface() != StateManager.SelectorType.PointSelect)
+        if (Selector.selectedObject == null || (this.getInterface() != StateManager.SelectorType.Point && this.getInterface() != StateManager.SelectorType.PointSelect))
         {
             return;
         }
@@ -137,11 +149,22 @@ public class Cursor : MonoBehaviour
                         
                         if (hitObject)
                         {
-                            this.Show();
+                            
                             gameObject.transform.position = endPoint;
                             GetComponent<LineRenderer>().SetPosition(0, Selector.selectedObject.transform.position);
                             GetComponent<LineRenderer>().SetPosition(1, transform.position);
-                            this.FocusMenu();
+                            if (this.getInterface() == StateManager.SelectorType.Point) //Select or non select interface
+                            {
+                                menu.GetComponent<SelectorMenu>().selector = this.gameObject;
+                                SelectorMenu.instance.MoveAndDropForce();
+                                this.Hide();
+
+                            }
+                            else
+                            {
+                                this.Show();
+                                this.FocusMenu();
+                            }
                         }
                     }
 
