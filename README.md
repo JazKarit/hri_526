@@ -1,65 +1,41 @@
-# Set up Azure Spatial Anchor in Unity project
-Most of the steps outlined below have been sourced from Microsoft's official documentation. This repository contains a Unity project with an interface to create and locate Azure Spatial Anchors.
+# Set up Colocated Workspace in Unity
+Follow the steps in the [parent repository](https://github.com/lagenuina/hololens_unity_asa) to configure ASA before beginning these steps.
 
-## Prerequisites
-You will need:
-* **PC** - A PC running Windows.
-* **Visual Studio** - [(Visual Studio 2019)](https://visualstudio.microsoft.com/downloads/) installed with the **Universal Windows Platform development workload** and the **Windows 10 SDK** (10.0.18362.0 or newer) component.
-* **HoloLens device**.
-* **Unity** - Unity 2020.3.48 with modules **Universal Windows Platform Build Support** and **Windows Build Support (IL2CPP)**.
+## ROS
+After installing the [Unity Ros Hub](https://github.com/Unity-Technologies/ROS-TCP-Endpoint) configure the IP of your ROS computer in the Robotics setting tab.
 
-## Set up your Project
-Clone this repository by running the following command:
-```
-git clone https://github.com/lagenuina/hololens_unity_asa.git
-```
-In Unity, open the project in the Unity folder.
-Navigate to Scenes and select "ASA".
+![image](https://github.com/dsaliba/hololens_unity_workspace/assets/69019487/4bb33d52-c9f0-4be7-9243-128d33f9958e)
 
-## Set up your project for HoloLens
-Follow this [tutorial](https://learn.microsoft.com/en-us/training/modules/learn-mrtk-tutorials/1-3-exercise-configure-unity-for-windows-mixed-reality) (starting from **Switch Build Platform** section) and make sure you:
-* Can successfully deploy Unity to Hololens.
-* Have your Unity project configured for Windows Mixed Reality.
 
-## Import ASA
-1. Launch [Mixed Reality Feauture Tool](https://learn.microsoft.com/en-us/windows/mixed-reality/develop/unity/welcome-to-mr-feature-tool)
-2. Select your project path - the folder that contains folders such as Assets, Packages, ProjectSettings, and so on - and select **Discover Features**
-3. Under *Azure Mixed Reality Services*, select both **Azure Spatial Anchors SDK Core** and **Azure Spatial Anchors SDK for Windows**
-4. Press **Get Features** --> **Import** --> **Approve** --> **Exit**
+## Calibration
+Similar to the parent repo a menu can be summoned by raising your left hand. Uppon pressing the create anchor button the project will begin searching for the calibration QR code. Once found a frame will be drawn on the QR code. If this position is correct press the "Create Anchor" button. The resulting anchor ID will be printed on the console.
 
-## Set Capabilities
-1. Go to **Edit** > **Project Setting** > **Player**
-2. Make sure the **Universal Windows Platform Settings** tab is selected
-3. In the Publishing Settings Configuration section, enable the following
-* InternetClient
-* InternetClientServer
-* PrivateNetworkClientServer
-* SpatialPerception (might already be enabled)
+![image](https://github.com/dsaliba/hololens_unity_workspace/assets/69019487/19903e54-48e5-452b-8a2f-93b443ff3325)
 
-## Set up the main camera
-1. In the Hierarchy Panel, select **Main Camera** under MixedRealityPlayspace.
-2. In the **Inspector**, set its transform position to **0,0,0**.
-3. Find the Clear Flags property, and change the dropdown from **Skybox** to **Solid Color**.
-4. Select the **Background** field to open a color picker.
-5. Set R, G, B, and A to 0.
-6. Select **Add Component** at the bottom and add the **Tracked Pose Driver Component** to the camera
 
-## Create an Azure Spatial Anchors account
-1. Follow [this guide](https://learn.microsoft.com/en-us/azure/spatial-anchors/how-tos/create-asa-account?tabs=azure-portal) to create an Azure Spatial Anchors account.
-2. In the Unity project, navigate to ASA GameObject, and paste your **Accound ID**, **Account Key** and **Account Domain** in the **Spatial Anchor Manager** Component.
-3. If you have an Anchor ID to localize, paste it in the **ASA Script** component.
+Feed this anchor ID into the "Anchor ID" field of the ASA Script.
+Upon rebuilding the unity and ROS enviornments should be succesfully colocated.
 
-## Deploy the HoloLens App
-You're all set to run the project!
+## Creating Tracked Objects
+![image](https://github.com/dsaliba/hololens_unity_workspace/assets/69019487/340a50ef-4c94-4880-800c-13216e7e6b9f)
 
-Cubes serve as visual representations of anchors.
-The Hand Menu activates when the palm of your *Left Hand* is detected. You can:
-  1) **Create a new Spatial Anchor**: a yellow cube will appear. You can move the cube to your desired location for anchor creation. If the anchor is successfully created, a Popup Dialog will appear with the associated AnchorID.
+1. Open an instance of the TFManager script in the inspector (*NOTE:* There should only be one instance of this script in the project)
+2. Add a new subscriber to the subscriber list by clicking the + icon
+3. Make the "Name" field the name of the frame ID provided by the ROS message
+4. Make the "Game Object" field the object of the model to be moved (If a selector is used make this object a paerent of both the model and selector objects)
+5. *Optional* Make the "Selector" object a selector to be used for this object. After doing so check the "Selectable" box
 
-![](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWVzZTE2djd3dTM0aXliNmh5OHhqb2RtbmFkdjN3ZXplb3lrMW4zYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/NM0sHHviDIdSybDg3U/giphy.gif)
+The tracked object should now work automatically.
 
-  2) **Locate a Spatial Anchor**: the anchor with the associated ID is automatically located on startup. However, if it's not successfully located, you can select this option from the menu.
+## Velocity Tracking Triggers
+The VelocityTracker script can be used in order to invoke actions when an object stops moving. 
+The "Scale" property adjusts the scale of the velocity vector drawn on the object. 
+The "Thresh" property adjusts the theshold at which an object is considered stopped.
 
-![](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcW03Y2plcjZkY2VzdWx2bzc5dGt5dWNhbW92cGg4a3d4eXJkN2piZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/CPBRXHIwhpnN3QlnBe/giphy.gif)
+![image](https://github.com/dsaliba/hololens_unity_workspace/assets/69019487/afdb71fb-1f7e-4ff6-89b2-e029077ba30e)
 
-  3) **Visually hide the Anchor**.
+The + icon under the OnStop list can be used to add unity events to invoke when the object is stopped. By adding a script with public methods to an object you can call the methods via this invoke list.
+
+
+
+
