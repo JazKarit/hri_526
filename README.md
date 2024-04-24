@@ -8,7 +8,7 @@ After installing the [Unity Ros Hub](https://github.com/Unity-Technologies/ROS-T
 
 
 ## Calibration
-Similar to the parent repo a menu can be summoned by raising your left hand. Uppon pressing the create anchor button the project will begin searching for the calibration QR code. Once found a frame will be drawn on the QR code. If this position is correct press the "Create Anchor" button. The resulting anchor ID will be printed on the console.
+Similar to the parent repo a menu can be summoned by raising your left hand. Uppon pressing the create anchor button the project will begin searching for the calibration QR code. Once found a frame will be drawn on the QR code. If this position is correct press the "Create Anchor" button. The resulting anchor ID will be printed on the console as long as the device is plugged into the computer. To find the anchor ID, go to the output log and searched for the term "saved" using ctrl+F.
 
 ![image](https://github.com/dsaliba/hololens_unity_workspace/assets/69019487/19903e54-48e5-452b-8a2f-93b443ff3325)
 
