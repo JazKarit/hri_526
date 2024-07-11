@@ -72,11 +72,11 @@ public class GameHandler : MonoBehaviour
     {
         switch (msg.data)
         {
-            case "blue_cup grabbed":
-                pourAdjuster.SetActive(true);
+            case "prism adjust":
+                grabAdjuster.GetComponent<GrabAdjuster>().Begin(true);
                 break;
-            case "arm hover":
-                grabAdjuster.GetComponent<GrabAdjuster>().Begin();
+            case "insert adjust":
+                grabAdjuster.GetComponent<GrabAdjuster>().Begin(false);
                 break;
         }
     }
@@ -222,14 +222,23 @@ public class GameHandler : MonoBehaviour
         }
     }
 
-    
 
-    public void SpeachTask()
+
+    /*public void SpeachTask()
     {
         active = true;
         RobotActions.instance.state = RobotActions.RobotState.PICK_ON_MOVE;
         watchingCup = true;
+    }*/
+    public void SpeechSort()
+    {
+        Debug.Log("I wanna sort stuff");
+        active = true;
+        RobotActions.instance.state = RobotActions.RobotState.PICK_ON_MOVE;
+        watchingCup = true;
     }
+
+
 
     public void objectStop()
     {
@@ -252,7 +261,7 @@ public class GameHandler : MonoBehaviour
         if (testFlag)
         {
             //StartTrial();
-            grabAdjuster.GetComponent<GrabAdjuster>().Begin();
+            grabAdjuster.GetComponent<GrabAdjuster>().Begin(true);
             testFlag = false;
         }
 

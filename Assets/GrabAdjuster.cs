@@ -12,6 +12,7 @@ public class GrabAdjuster : MonoBehaviour
     public GameObject gripper;
     Vector3 lastOffset;
     bool beginFlag = false;
+    bool arm = true;
 
 
     // Start is called before the first frame update
@@ -28,8 +29,15 @@ public class GrabAdjuster : MonoBehaviour
             handle.transform.position = gripper.transform.position;
             setPoint = gripper.transform.position;
             lastOffset = new Vector3();
+            if (arm)
+            {
+                RobotActions.instance.ToggleArmAdjust(true);
+            }
+            else
+            {
+                RobotActions.instance.ToggleInsertAdjust(true);
+            }
             
-            RobotActions.instance.ToggleArmAdjust(true);
             beginFlag = false;
         } 
         Vector3 offset = TransformTools.InverseTransformPointUnscaled(transform, setPoint);
@@ -38,7 +46,14 @@ public class GrabAdjuster : MonoBehaviour
         if (Vector3.Distance(lastOffset, offset) > 0.005)
         {
             lastOffset = offset;
-            RobotActions.instance.GrabAdjust(offset);
+            if (arm)
+            {
+                RobotActions.instance.GrabAdjust(offset);
+            }
+            else
+            {
+                RobotActions.instance.InsertAdjust(offset);
+            }
         }
         Debug.Log(offset);
     }
@@ -46,9 +61,11 @@ public class GrabAdjuster : MonoBehaviour
 
 
 
-    public void Begin()
+    public void Begin(bool set)
     {
         beginFlag = true;
+        arm = set;
+        Debug.Log("Adjuster set" + arm);
         parent.SetActive(true);
 
     }
@@ -56,6 +73,13 @@ public class GrabAdjuster : MonoBehaviour
     public void Done()
     {
         parent.SetActive(false);
-        RobotActions.instance.ToggleArmAdjust(false);
+        if (arm)
+        {
+            RobotActions.instance.ToggleArmAdjust(false);
+        }
+        else
+        {
+            RobotActions.instance.ToggleInsertAdjust(false);
+        }
     }
 }

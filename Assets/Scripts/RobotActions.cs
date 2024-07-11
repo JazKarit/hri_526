@@ -28,6 +28,9 @@ public class RobotActions : MonoBehaviour
         ros.RegisterPublisher<PointMsg>("/arm/pour_adjust");
         ros.RegisterPublisher<BoolMsg>("/arm/pickup_toggle");
         ros.RegisterPublisher<PointMsg>("/arm/pickup_adjust");
+        ros.RegisterPublisher<StringMsg>("/arm/pickup_prism");
+        ros.RegisterPublisher<PointMsg>("/arm/insert_adjust");
+        ros.RegisterPublisher<BoolMsg>("/arm/insert_toggle");
         if (instance != null)
         {
             Debug.Log("Uh oh");
@@ -38,7 +41,7 @@ public class RobotActions : MonoBehaviour
 
     }
 
-    public void PickUpBlueCup()
+    /*public void PickUpBlueCup()
     {
         if (this.state == RobotState.PICK_ON_MOVE)
         {
@@ -46,6 +49,26 @@ public class RobotActions : MonoBehaviour
             ros.Publish("/arm/pickup/blue_cup", new BoolMsg(true));
         }
 
+    }*/
+
+    /*public void PickUpBlueCup()
+    {
+        if (this.state == RobotState.PICK_ON_MOVE)
+        {
+            this.state = RobotState.HOLDING;
+            ros.Publish("/arm/pickup/blue_cup", new BoolMsg(true));
+        }
+
+    }*/
+
+    public void PickUpPrism()
+    {
+        Debug.Log("Pickup" + this.state);
+        if (this.state == RobotState.PICK_ON_MOVE)
+        {
+            this.state = RobotState.HOLDING;
+            ros.Publish("/arm/pickup_prism", new StringMsg("Red"));
+        }
     }
 
     public void PlaceInBox()
@@ -81,6 +104,21 @@ public class RobotActions : MonoBehaviour
         msg.y = transform.y;
         msg.z = transform.z;
         ros.Publish("/arm/pickup_adjust", msg);
+    }
+
+    public void ToggleInsertAdjust(bool state)
+    {
+        ros.Publish("/arm/insert_toggle", new BoolMsg(state));
+        Debug.Log("TOGGLED " + state);
+    }
+
+    public void InsertAdjust(Vector3 transform)
+    {
+        PointMsg msg = new PointMsg();
+        msg.x = transform.x;
+        msg.y = transform.y;
+        msg.z = transform.z;
+        ros.Publish("/arm/insert_adjust", msg);
     }
 
     // Update is called once per frame

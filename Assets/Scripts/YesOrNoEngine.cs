@@ -55,7 +55,7 @@ public class YesOrNoEngine : MonoBehaviour
 
 
     //Predef questions
-    public void PromptBluePickup()
+    /*public void PromptBluePickup()
     {
         if (RobotActions.instance.state == RobotActions.RobotState.PICK_ON_MOVE)
         {
@@ -64,6 +64,20 @@ public class YesOrNoEngine : MonoBehaviour
                 if (answer)
                 {
                     RobotActions.instance.PickUpBlueCup();
+                }
+            });
+        }
+    }*/
+
+    public void PromptPrismPickup()
+    {
+        if (RobotActions.instance.state == RobotActions.RobotState.PICK_ON_MOVE)
+        {
+            instance.PoseQuestion("I see the prisms on the table, should I begin sorting?", (bool answer) =>
+            {
+                if (answer)
+                {
+                    RobotActions.instance.PickUpPrism();
                 }
             });
         }
