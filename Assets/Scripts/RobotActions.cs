@@ -106,6 +106,23 @@ public class RobotActions : MonoBehaviour
         ros.Publish("/arm/pickup_adjust", msg);
     }
 
+    public void ToggleArmAdjust(bool state)
+    {
+        /*ros.Publish("/arm/pickup_toggle", new BoolMsg(state));
+        Debug.Log("TOGGLED " + state);*/
+
+        //TODO: DO SOMETHING
+    }
+
+    public void CreateFirstPoint(Vector3 transform)
+    {
+        PointMsg msg = new PointMsg();
+        msg.x = transform.x;
+        msg.y = transform.y;
+        msg.z = transform.z;
+        ros.Publish("/arm/pickup_adjust", msg);
+    }
+
     public void ToggleInsertAdjust(bool state)
     {
         ros.Publish("/arm/insert_toggle", new BoolMsg(state));
