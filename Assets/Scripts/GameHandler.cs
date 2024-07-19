@@ -35,6 +35,8 @@ public class GameHandler : MonoBehaviour
     public GameObject gripper;
 
     public GameObject pourAdjuster;
+    public GameObject point1;
+    public GameObject grabScale;
 
 
     //Statistics (public for debugging)
@@ -211,6 +213,19 @@ public class GameHandler : MonoBehaviour
         ros.Publish("/arm/pour", new Float32Msg(angle));
     }
 
+    public void ScaleToggle(bool toggle)
+    {
+        grabScale.GetComponent<AdjustScale>().set(toggle);
+        if (toggle)
+        {
+            Vector3 position = new Vector3();
+            position.x = grabAdjuster.transform.position.y + 0.1f;
+            position.y = grabAdjuster.transform.position.x;
+            position.z = grabAdjuster.transform.position.z;
+            grabScale.GetComponent<AdjustScale>().parent.transform.position = position;
+        }
+    }
+
     public void PourToggle(bool toggle)
     {
         ros.Publish("/arm/pour_toggle", new BoolMsg(toggle));
@@ -238,7 +253,13 @@ public class GameHandler : MonoBehaviour
         watchingCup = true;
     }
 
-
+    public void SpeechWipe()
+    {
+        Debug.Log("I wanna sort stuff");
+        active = true;
+        RobotActions.instance.state = RobotActions.RobotState.PICK_ON_MOVE;
+        watchingCup = true;
+    }
 
     public void objectStop()
     {

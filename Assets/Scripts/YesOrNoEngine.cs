@@ -98,4 +98,20 @@ public class YesOrNoEngine : MonoBehaviour
             });
         }
     }
+
+    public void PromptInsert()
+    {
+        if (RobotActions.instance.state == RobotActions.RobotState.HOLDING)
+        {
+            instance.PoseQuestion("I see the base, would you like me to insert the prism?", (bool answer) =>
+            {
+                if (answer)
+                {
+
+                    /*GameHandler.instance.PourToggle(false);
+                    RobotActions.instance.PlaceInBox();*/
+                }
+            });
+        }
+    }
 }

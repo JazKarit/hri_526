@@ -41,7 +41,7 @@ public class GrabAdjuster : MonoBehaviour
             beginFlag = false;
         } 
         Vector3 offset = TransformTools.InverseTransformPointUnscaled(transform, setPoint);
-        handle.transform.position = new Vector3(handle.transform.position.x, setPoint.y, handle.transform.position.z);
+        handle.transform.position = new Vector3(handle.transform.position.x, handle.transform.position.y, handle.transform.position.z);
         //Debug.Log(offset);
         if (Vector3.Distance(lastOffset, offset) > 0.005)
         {
@@ -67,12 +67,14 @@ public class GrabAdjuster : MonoBehaviour
         arm = set;
         Debug.Log("Adjuster set" + arm);
         parent.SetActive(true);
+        GameHandler.instance.ScaleToggle(true);
 
     }
 
     public void Done()
     {
         parent.SetActive(false);
+        GameHandler.instance.ScaleToggle(false);
         if (arm)
         {
             RobotActions.instance.ToggleArmAdjust(false);

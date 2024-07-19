@@ -10,6 +10,8 @@ public class RobotActions : MonoBehaviour
 {
     public enum RobotState
     {
+        PLANNING_1,
+        PLANNING_2,
         PICK_ON_MOVE,
         HOLDING,
         IDLE,
@@ -31,6 +33,7 @@ public class RobotActions : MonoBehaviour
         ros.RegisterPublisher<StringMsg>("/arm/pickup_prism");
         ros.RegisterPublisher<PointMsg>("/arm/insert_adjust");
         ros.RegisterPublisher<BoolMsg>("/arm/insert_toggle");
+        ros.RegisterPublisher<Float32Msg>("/arm/scale");
         if (instance != null)
         {
             Debug.Log("Uh oh");
@@ -106,7 +109,12 @@ public class RobotActions : MonoBehaviour
         ros.Publish("/arm/pickup_adjust", msg);
     }
 
-    public void ToggleArmAdjust(bool state)
+    public void SetScale(float scale)
+    {
+        ros.Publish("/arm/scale", new Float32Msg(scale));
+    }
+
+    public void TogglePoint1(bool state)
     {
         /*ros.Publish("/arm/pickup_toggle", new BoolMsg(state));
         Debug.Log("TOGGLED " + state);*/
@@ -120,7 +128,16 @@ public class RobotActions : MonoBehaviour
         msg.x = transform.x;
         msg.y = transform.y;
         msg.z = transform.z;
-        ros.Publish("/arm/pickup_adjust", msg);
+        ros.Publish("/arm/point_1", msg);
+    }
+
+    public void CreateSecondPoint(Vector3 transform)
+    {
+        PointMsg msg = new PointMsg();
+        msg.x = transform.x;
+        msg.y = transform.y;
+        msg.z = transform.z;
+        ros.Publish("/arm/point_2", msg);
     }
 
     public void ToggleInsertAdjust(bool state)
