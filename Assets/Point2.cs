@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Point1 : MonoBehaviour
+public class Point2 : MonoBehaviour
 {
     public GameObject parent;
     Vector3 setPoint;
@@ -38,6 +38,7 @@ public class Point1 : MonoBehaviour
         if (Vector3.Distance(lastOffset, offset) > 0.005)
         {
             lastOffset = offset;
+            
         }
         Debug.Log(offset);
     }
@@ -55,7 +56,7 @@ public class Point1 : MonoBehaviour
 
     public void Done()
     {
-        RobotActions.instance.CreateFirstPoint(offset);
+        RobotActions.instance.CreateSecondPoint(offset);
         //parent.SetActive(false);
     }
 }

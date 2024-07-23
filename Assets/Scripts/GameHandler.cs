@@ -35,8 +35,9 @@ public class GameHandler : MonoBehaviour
     public GameObject gripper;
 
     public GameObject pourAdjuster;
-    public GameObject point1;
     public GameObject grabScale;
+    public GameObject start;
+    public GameObject end;
 
 
     //Statistics (public for debugging)
@@ -255,9 +256,9 @@ public class GameHandler : MonoBehaviour
 
     public void SpeechWipe()
     {
-        Debug.Log("I wanna sort stuff");
         active = true;
-        RobotActions.instance.state = RobotActions.RobotState.PICK_ON_MOVE;
+        RobotActions.instance.state = RobotActions.RobotState.PLANNING_1;
+        start.GetComponent<Point1>().Begin(true);
         watchingCup = true;
     }
 

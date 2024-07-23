@@ -8,6 +8,7 @@ public class AdjustScale : MonoBehaviour
 {
     public GameObject parent;
     public GameObject adjuster;
+    public GameObject readout;
     private float scale = 0;
     private int lastScale;
     private bool active;
@@ -21,23 +22,23 @@ public class AdjustScale : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (true)
+        if (active)
         {
             Vector3 newPos = new Vector3();
 
             float rawScale = transform.localPosition.y;
 
-            if (rawScale < -0.1f)
+            if (rawScale < -1.0f)
             {
-                rawScale = -0.1f;
+                rawScale = -1.0f;
             }
 
-            if (rawScale > 0.1f)
+            if (rawScale > 1.0f)
             {
-                rawScale = 0.1f;
+                rawScale = 1.0f;
             }
 
-            int scaleCompare = (int) ((rawScale + 0.1f) * 100.0f);
+            int scaleCompare = (int) ((rawScale + 1.0f) * 10.0f);
 
             if (Math.Abs(scaleCompare - lastScale) > 0.5)
             {
@@ -45,7 +46,7 @@ public class AdjustScale : MonoBehaviour
 
                 scale /= 10.0f;
 
-                Debug.Log(scale);
+                readout.GetComponent<TextMesh>().text = "Sensitivity: " + scale + "x";
                 RobotActions.instance.SetScale(scale);
             }
 
@@ -60,15 +61,16 @@ public class AdjustScale : MonoBehaviour
     public void set(bool flag)
     {
         active = flag;
-        parent.SetActive(flag);
         if (flag)
         {
             Vector3 adjustPos = new Vector3();
-            adjustPos.y = adjuster.transform.position.x;
-            adjustPos.x = adjuster.transform.position.y + 0.05f;
+            adjustPos.x = adjuster.transform.position.x - 0.05f;
+            adjustPos.y = adjuster.transform.position.y;
             adjustPos.z = adjuster.transform.position.z;
             parent.transform.position = adjustPos;
         }
+
+        parent.SetActive(flag);
 
     }
 }

@@ -12,6 +12,7 @@ public class RobotActions : MonoBehaviour
     {
         PLANNING_1,
         PLANNING_2,
+        WIPING,
         PICK_ON_MOVE,
         HOLDING,
         IDLE,
@@ -34,6 +35,9 @@ public class RobotActions : MonoBehaviour
         ros.RegisterPublisher<PointMsg>("/arm/insert_adjust");
         ros.RegisterPublisher<BoolMsg>("/arm/insert_toggle");
         ros.RegisterPublisher<Float32Msg>("/arm/scale");
+        ros.RegisterPublisher<PointMsg>("/arm/wipe/start_position");
+        ros.RegisterPublisher<PointMsg>("/arm/wipe/ending_position");
+        ros.RegisterPublisher<BoolMsg>("/arm/wipe/begin");
         if (instance != null)
         {
             Debug.Log("Uh oh");
@@ -128,7 +132,12 @@ public class RobotActions : MonoBehaviour
         msg.x = transform.x;
         msg.y = transform.y;
         msg.z = transform.z;
-        ros.Publish("/arm/point_1", msg);
+        ros.Publish("/arm/wipe/start_position", msg);
+        if (this.state == RobotState.PLANNING_1)
+        {
+            GameHandler.instance.end.GetComponent<Point2>().Begin(true);
+            this.state = RobotState.PLANNING_2;
+        }
     }
 
     public void CreateSecondPoint(Vector3 transform)
@@ -137,7 +146,12 @@ public class RobotActions : MonoBehaviour
         msg.x = transform.x;
         msg.y = transform.y;
         msg.z = transform.z;
-        ros.Publish("/arm/point_2", msg);
+        ros.Publish("/arm/wipe/ending_position", msg);
+        if (this.state == RobotState.PLANNING_2)
+        {
+            this.state = RobotState.WIPING;
+            ros.Publish("/arm/wipe/begin", new BoolMsg(true));
+        }
     }
 
     public void ToggleInsertAdjust(bool state)
