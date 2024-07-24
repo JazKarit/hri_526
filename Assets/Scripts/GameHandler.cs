@@ -36,8 +36,11 @@ public class GameHandler : MonoBehaviour
 
     public GameObject pourAdjuster;
     public GameObject grabScale;
-    public GameObject start;
-    public GameObject end;
+    public GameObject point1;
+    public GameObject point2;
+    public GameObject point3;
+    public GameObject point4;
+    public GameObject armController;
 
 
     //Statistics (public for debugging)
@@ -80,6 +83,9 @@ public class GameHandler : MonoBehaviour
                 break;
             case "insert adjust":
                 grabAdjuster.GetComponent<GrabAdjuster>().Begin(false);
+                break;
+            case "begin wipe":
+                armController.GetComponent<ArmController>().Begin(true);
                 break;
         }
     }
@@ -220,9 +226,9 @@ public class GameHandler : MonoBehaviour
         if (toggle)
         {
             Vector3 position = new Vector3();
-            position.x = grabAdjuster.transform.position.y + 0.1f;
-            position.y = grabAdjuster.transform.position.x;
-            position.z = grabAdjuster.transform.position.z;
+            position.x = gripper.transform.position.y + 0.1f;
+            position.y = gripper.transform.position.x;
+            position.z = gripper.transform.position.z;
             grabScale.GetComponent<AdjustScale>().parent.transform.position = position;
         }
     }
@@ -257,8 +263,8 @@ public class GameHandler : MonoBehaviour
     public void SpeechWipe()
     {
         active = true;
-        RobotActions.instance.state = RobotActions.RobotState.PLANNING_1;
-        start.GetComponent<Point1>().Begin(true);
+        RobotActions.instance.state = RobotActions.RobotState.PLANNING;
+        point1.GetComponent<Point1>().Begin(true);
         watchingCup = true;
     }
 

@@ -25,7 +25,7 @@ public class Point1 : MonoBehaviour
     {
         if (beginFlag)
         {
-            handle.transform.position = gripper.transform.position;
+            handle.transform.position = new Vector3(gripper.transform.position.x, 0, gripper.transform.position.z);
             setPoint = gripper.transform.position;
             lastOffset = new Vector3();
             //RobotActions.instance. whatever wiping function

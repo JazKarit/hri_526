@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Point2 : MonoBehaviour
+public class Point3 : MonoBehaviour
 {
     public GameObject parent;
     Vector3 setPoint;
@@ -12,10 +12,6 @@ public class Point2 : MonoBehaviour
     Vector3 lastOffset;
     bool beginFlag = false;
     bool arm = true;
-
-    public GameObject prevPoint;
-    int lengthOfLineRenderer = 2;
-
 
 
     // Start is called before the first frame update
@@ -42,11 +38,9 @@ public class Point2 : MonoBehaviour
         if (Vector3.Distance(lastOffset, offset) > 0.005)
         {
             lastOffset = offset;
-            
         }
         Debug.Log(offset);
-     }
-
+    }
 
 
 
@@ -61,8 +55,7 @@ public class Point2 : MonoBehaviour
 
     public void Done()
     {
-        RobotActions.instance.CreateSecondPoint(offset);
-
+        RobotActions.instance.CreateThirdPoint(offset);
         //parent.SetActive(false);
     }
 }

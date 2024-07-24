@@ -10,8 +10,7 @@ public class RobotActions : MonoBehaviour
 {
     public enum RobotState
     {
-        PLANNING_1,
-        PLANNING_2,
+        PLANNING,
         WIPING,
         PICK_ON_MOVE,
         HOLDING,
@@ -35,9 +34,8 @@ public class RobotActions : MonoBehaviour
         ros.RegisterPublisher<PointMsg>("/arm/insert_adjust");
         ros.RegisterPublisher<BoolMsg>("/arm/insert_toggle");
         ros.RegisterPublisher<Float32Msg>("/arm/scale");
-        ros.RegisterPublisher<PointMsg>("/arm/wipe/start_position");
-        ros.RegisterPublisher<PointMsg>("/arm/wipe/ending_position");
-        ros.RegisterPublisher<BoolMsg>("/arm/wipe/begin");
+        ros.RegisterPublisher<BoolMsg>("arm/wipe_begin");
+        ros.RegisterPublisher<PointMsg>("/arm/wipe_adjust");
         if (instance != null)
         {
             Debug.Log("Uh oh");
@@ -128,30 +126,50 @@ public class RobotActions : MonoBehaviour
 
     public void CreateFirstPoint(Vector3 transform)
     {
-        PointMsg msg = new PointMsg();
-        msg.x = transform.x;
-        msg.y = transform.y;
-        msg.z = transform.z;
-        ros.Publish("/arm/wipe/start_position", msg);
-        if (this.state == RobotState.PLANNING_1)
+        if (this.state == RobotState.PLANNING)
         {
-            GameHandler.instance.end.GetComponent<Point2>().Begin(true);
-            this.state = RobotState.PLANNING_2;
+            GameHandler.instance.point2.GetComponent<Point2>().Begin(true);
         }
     }
 
     public void CreateSecondPoint(Vector3 transform)
     {
+        if (this.state == RobotState.PLANNING)
+        {
+            GameHandler.instance.point3.GetComponent<Point3>().Begin(true);
+        }
+    }
+
+    public void CreateThirdPoint(Vector3 transform)
+    {
+        if (this.state == RobotState.PLANNING)
+        {
+            GameHandler.instance.point4.GetComponent<Point4>().Begin(true);
+        }
+    }
+
+    public void CreateFourthPoint(Vector3 center)
+    {
+        PointMsg msg = new PointMsg();
+        msg.x = center.x;
+        msg.y = center.y;
+        msg.z = center.z;
+        if (this.state == RobotState.PLANNING)
+        {
+            //publish
+            this.state = RobotState.WIPING;
+            ros.Publish("/arm/wipe_begin", msg);
+            
+        }
+    }
+
+    public void MoveArm(Vector3 transform)
+    {
         PointMsg msg = new PointMsg();
         msg.x = transform.x;
         msg.y = transform.y;
         msg.z = transform.z;
-        ros.Publish("/arm/wipe/ending_position", msg);
-        if (this.state == RobotState.PLANNING_2)
-        {
-            this.state = RobotState.WIPING;
-            ros.Publish("/arm/wipe/begin", new BoolMsg(true));
-        }
+        ros.Publish("/arm/wipe_adjust", msg);
     }
 
     public void ToggleInsertAdjust(bool state)
