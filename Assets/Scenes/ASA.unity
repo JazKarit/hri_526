@@ -288,7 +288,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 77200471}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.183}
+  m_LocalPosition: {x: -0.493, y: 0, z: -0.2}
   m_LocalScale: {x: 0.04, y: 0.15, z: 0.04}
   m_Children:
   - {fileID: 1206949070}
@@ -1433,7 +1433,7 @@ MonoBehaviour:
   point2: {fileID: 1206949069}
   point3: {fileID: 728479049}
   point4: {fileID: 976038427}
-  armController: {fileID: 1999869184}
+  armController: {fileID: 1231962134}
   placments: 0
   errors: []
 --- !u!4 &190703671
@@ -2929,7 +2929,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 396715542}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.44, y: 0, z: 0.418}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 976038428}
@@ -3189,7 +3189,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 413778958}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.28, y: 0, z: 0}
+  m_LocalPosition: {x: 0.234, y: 0, z: -0.22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 728479050}
@@ -7801,7 +7801,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 988914212}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.117}
+  m_LocalPosition: {x: -0.468, y: 0, z: 0.494}
   m_LocalScale: {x: 0.04, y: 0.15, z: 0.04}
   m_Children:
   - {fileID: 1626685076}
@@ -10461,9 +10461,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57000730da82c5749a45dbde939f6d94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parent: {fileID: 0}
-  handle: {fileID: 0}
-  gripper: {fileID: 0}
+  parent: {fileID: 1999869184}
+  handle: {fileID: 1032697751}
+  gripper: {fileID: 1570426879}
   points:
   - {fileID: 82734740}
   - {fileID: 251407539}

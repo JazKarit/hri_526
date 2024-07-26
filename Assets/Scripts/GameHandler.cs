@@ -207,6 +207,12 @@ public class GameHandler : MonoBehaviour
     {
         RobotActions.instance.state = RobotActions.RobotState.IDLE;
         PourToggle(false);
+        armController.GetComponent<ArmController>().Deactivate();
+        point1.GetComponent<Point1>().Deactivate();
+        point2.GetComponent<Point2>().Deactivate();
+        point3.GetComponent<Point3>().Deactivate();
+        point4.GetComponent<Point4>().Deactivate();
+        RobotActions.instance.GoHome();
     }
 
     public void SpeechPour()

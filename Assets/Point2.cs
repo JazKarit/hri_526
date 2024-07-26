@@ -37,14 +37,13 @@ public class Point2 : MonoBehaviour
             beginFlag = false;
         }
         offset = TransformTools.InverseTransformPointUnscaled(transform, setPoint);
-        handle.transform.position = new Vector3(handle.transform.position.x, setPoint.y, handle.transform.position.z);
+        handle.transform.position = new Vector3(handle.transform.position.x, 0, handle.transform.position.z);
         //Debug.Log(offset);
         if (Vector3.Distance(lastOffset, offset) > 0.005)
         {
             lastOffset = offset;
             
         }
-        Debug.Log(offset);
      }
 
 
@@ -64,5 +63,10 @@ public class Point2 : MonoBehaviour
         RobotActions.instance.CreateSecondPoint(offset);
 
         //parent.SetActive(false);
+    }
+
+    public void Deactivate()
+    {
+        parent.SetActive(false);
     }
 }

@@ -41,13 +41,12 @@ public class Point4 : MonoBehaviour
             beginFlag = false;
         }
         offset = TransformTools.InverseTransformPointUnscaled(transform, setPoint);
-        handle.transform.position = new Vector3(handle.transform.position.x, setPoint.y, handle.transform.position.z);
+        handle.transform.position = new Vector3(handle.transform.position.x, 0, handle.transform.position.z);
         //Debug.Log(offset);
         if (Vector3.Distance(lastOffset, offset) > 0.005)
         {
             lastOffset = offset;
         }
-        Debug.Log(offset);
     }
 
 
@@ -63,6 +62,14 @@ public class Point4 : MonoBehaviour
 
     public void Done()
     {
+        LineRenderer lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.widthMultiplier = 0.01f;
+        lineRenderer.SetPosition(0, point1Handle.transform.position);
+        lineRenderer.SetPosition(1, point2Handle.transform.position);
+        lineRenderer.SetPosition(2, point3Handle.transform.position);
+        lineRenderer.SetPosition(3, handle.transform.position);
+        lineRenderer.SetPosition(4, point1Handle.transform.position);
+
         Vector3 point1 = point1Handle.transform.position;
         Vector3 point2 = point2Handle.transform.position;
         Vector3 point3 = point3Handle.transform.position;
@@ -72,13 +79,12 @@ public class Point4 : MonoBehaviour
         Vector3 center = sum / 4.0f;
         RobotActions.instance.CreateFourthPoint(center);        
 
-        LineRenderer lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.widthMultiplier = 0.01f;
-        lineRenderer.SetPosition(0, point1Handle.transform.position);
-        lineRenderer.SetPosition(1, point2Handle.transform.position);
-        lineRenderer.SetPosition(2, point3Handle.transform.position);
-        lineRenderer.SetPosition(3, handle.transform.position);
-        lineRenderer.SetPosition(4, point1Handle.transform.position);
+        
         //parent.SetActive(false);
+    }
+
+    public void Deactivate()
+    {
+        parent.SetActive(false);
     }
 }

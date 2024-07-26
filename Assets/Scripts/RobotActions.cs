@@ -34,8 +34,10 @@ public class RobotActions : MonoBehaviour
         ros.RegisterPublisher<PointMsg>("/arm/insert_adjust");
         ros.RegisterPublisher<BoolMsg>("/arm/insert_toggle");
         ros.RegisterPublisher<Float32Msg>("/arm/scale");
-        ros.RegisterPublisher<BoolMsg>("arm/wipe_begin");
+        ros.RegisterPublisher<PointMsg>("/arm/wipe_begin");
+        ros.RegisterPublisher<BoolMsg>("/arm/wipe_toggle");
         ros.RegisterPublisher<PointMsg>("/arm/wipe_adjust");
+        ros.RegisterPublisher<BoolMsg>("/arm/go_home");
         if (instance != null)
         {
             Debug.Log("Uh oh");
@@ -150,17 +152,25 @@ public class RobotActions : MonoBehaviour
 
     public void CreateFourthPoint(Vector3 center)
     {
+        Debug.Log("X: " + center.x + " Y: " + center.y + " Z: " + center.z);
         PointMsg msg = new PointMsg();
         msg.x = center.x;
         msg.y = center.y;
         msg.z = center.z;
+        Debug.Log("State: " + this.state);
         if (this.state == RobotState.PLANNING)
         {
+            Debug.Log("If the state is planning how the fuck did we not get here");
             //publish
-            this.state = RobotState.WIPING;
             ros.Publish("/arm/wipe_begin", msg);
+            this.state = RobotState.WIPING;           
             
         }
+    }
+
+    public void ToggleArmController(bool state)
+    {
+        ros.Publish("/arm/wipe_toggle", new BoolMsg(state));
     }
 
     public void MoveArm(Vector3 transform)
@@ -170,6 +180,11 @@ public class RobotActions : MonoBehaviour
         msg.y = transform.y;
         msg.z = transform.z;
         ros.Publish("/arm/wipe_adjust", msg);
+    }
+
+    public void GoHome()
+    {
+        ros.Publish("/arm/go_home", new BoolMsg(true));
     }
 
     public void ToggleInsertAdjust(bool state)

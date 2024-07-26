@@ -21,11 +21,7 @@ public class ArmController : MonoBehaviour
     void Start()
     {
         setPoint = transform.position;
-        verticies = new Vector3[4];
-        for (int i = 0; i < 4; i++)
-        {
-            verticies[i] = points[i].transform.position;
-        }
+        
     }
 
     // Update is called once per frame
@@ -37,17 +33,27 @@ public class ArmController : MonoBehaviour
             setPoint = gripper.transform.position;
             lastOffset = new Vector3();
             lastTransform = new Vector3();
+            RobotActions.instance.ToggleArmController(true);
             beginFlag = false;
         }
+
+        verticies = new Vector3[4];
+        for (int i = 0; i < 4; i++)
+        {
+            verticies[i] = points[i].transform.position;
+        }
+
         Vector3 offset = TransformTools.InverseTransformPointUnscaled(transform, setPoint);
-        handle.transform.position = new Vector3(handle.transform.position.x, handle.transform.position.y, handle.transform.position.z);
-        //Debug.Log(offset);
         if (Vector3.Distance(lastOffset, offset) > 0.005)
         {
             lastOffset = offset;
-            if (this.pointInPolygon(handle.transform.position.x, handle.transform.position.y))
+            float xValue = handle.transform.position.x + 100.0f;
+            float yValue = handle.transform.position.z + 100.0f;
+            if (this.pointInPolygon(xValue, yValue))
             {
+                Debug.Log("Can Move");
                 handle.transform.position = new Vector3(handle.transform.position.x, setPoint.y, handle.transform.position.z);
+                lastTransform = new Vector3(handle.transform.position.x, handle.transform.position.y, handle.transform.position.z);
                 RobotActions.instance.MoveArm(offset);
                 //publish
             }
@@ -58,7 +64,7 @@ public class ArmController : MonoBehaviour
             
             
         }
-        lastTransform = new Vector3(handle.transform.position.x, handle.transform.position.y, handle.transform.position.z);
+        
         Debug.Log(offset);
     }
 
@@ -80,27 +86,27 @@ public class ArmController : MonoBehaviour
 
     public bool pointInPolygon(float x , float y)
     {
-        int n = verticies.Length;
+        int n = 4;
         bool inside = false;
         float xinters = 0.0f;
 
-        float p1x = verticies[0].x;
-        float p1y = verticies[0].y;
+        float p1x = verticies[0].x + 100.0f;
+        float p1y = verticies[0].z + 100.0f;
         for (int i = 0; i < n + 1; i++) 
         {
-            float p2x = verticies[i % n].x;
-            float p2y = verticies[i % n].y;
+            float p2x = verticies[i % n].x + 100.0f;
+            float p2y = verticies[i % n].z + 100.0f;
 
             if (y > Math.Min(p1y, p2y))
             {
-                if (p2y <= Math.Max(p1y, p2y))
+                if (y <= Math.Max(p1y, p2y))
                 {
                     if (x <= Math.Max(p1x, p2x))
                     {
-                        xinters = (p2y - p1y) * (p2x - p1x) / (p2y = p1y) + p1x;
+                        xinters = (y - p1y) * (p2x - p1x) / (p2y - p1y) + p1x;
                     }
 
-                    if ((p1x == p2x) || (xinters <= xinters))
+                    if (Math.Abs(x) <= Math.Abs(xinters))
                     {
                         inside = !(inside);
                     }
@@ -111,5 +117,11 @@ public class ArmController : MonoBehaviour
             p1y = p2y;
         }
         return inside;
+    }
+
+    public void Deactivate()
+    {
+        parent.SetActive(false);
+        GameHandler.instance.ScaleToggle(false);
     }
 }
