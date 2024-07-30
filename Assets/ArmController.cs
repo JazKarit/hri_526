@@ -53,7 +53,7 @@ public class ArmController : MonoBehaviour
             {
                 Debug.Log("Can Move");
                 handle.transform.position = new Vector3(handle.transform.position.x, setPoint.y, handle.transform.position.z);
-                lastTransform = new Vector3(handle.transform.position.x, handle.transform.position.y, handle.transform.position.z);
+                lastTransform = new Vector3(handle.transform.position.x, setPoint.y, handle.transform.position.z);
                 RobotActions.instance.MoveArm(offset);
                 //publish
             }
@@ -64,8 +64,6 @@ public class ArmController : MonoBehaviour
             
             
         }
-        
-        Debug.Log(offset);
     }
 
 
@@ -97,19 +95,23 @@ public class ArmController : MonoBehaviour
             float p2x = verticies[i % n].x + 100.0f;
             float p2y = verticies[i % n].z + 100.0f;
 
-            if (y > Math.Min(p1y, p2y))
+            if (y >= Math.Min(p1y, p2y))
             {
                 if (y <= Math.Max(p1y, p2y))
                 {
                     if (x <= Math.Max(p1x, p2x))
                     {
-                        xinters = (y - p1y) * (p2x - p1x) / (p2y - p1y) + p1x;
+                        if (p1y != p2y)
+                        {
+                            xinters = (y - p1y) * (p2x - p1x) / (p2y - p1y) + p1x;
+                        }
+                        if (p1x == p2x || x <= xinters)
+                        {
+                            inside = !(inside);
+                        }
                     }
 
-                    if (Math.Abs(x) <= Math.Abs(xinters))
-                    {
-                        inside = !(inside);
-                    }
+                    
                 }
             }
 

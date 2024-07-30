@@ -47,6 +47,16 @@ public class Point4 : MonoBehaviour
         {
             lastOffset = offset;
         }
+
+        //for testing
+
+        LineRenderer lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.widthMultiplier = 0.01f;
+        lineRenderer.SetPosition(0, point1Handle.transform.position);
+        lineRenderer.SetPosition(1, point2Handle.transform.position);
+        lineRenderer.SetPosition(2, point3Handle.transform.position);
+        lineRenderer.SetPosition(3, handle.transform.position);
+        lineRenderer.SetPosition(4, point1Handle.transform.position);
     }
 
 
@@ -77,9 +87,9 @@ public class Point4 : MonoBehaviour
         Vector3 sum = point1 + point2 + point3 + point4;
 
         Vector3 center = sum / 4.0f;
-        RobotActions.instance.CreateFourthPoint(center);        
+        RobotActions.instance.CreateFourthPoint(center);
 
-        
+
         //parent.SetActive(false);
     }
 
