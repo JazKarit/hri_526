@@ -10,6 +10,8 @@ public class RobotActions : MonoBehaviour
 {
     public enum RobotState
     {
+        PLANNING,
+        WIPING,
         PICK_ON_MOVE,
         HOLDING,
         IDLE,
@@ -28,6 +30,14 @@ public class RobotActions : MonoBehaviour
         ros.RegisterPublisher<PointMsg>("/arm/pour_adjust");
         ros.RegisterPublisher<BoolMsg>("/arm/pickup_toggle");
         ros.RegisterPublisher<PointMsg>("/arm/pickup_adjust");
+        ros.RegisterPublisher<StringMsg>("/arm/pickup_prism");
+        ros.RegisterPublisher<PointMsg>("/arm/insert_adjust");
+        ros.RegisterPublisher<BoolMsg>("/arm/insert_toggle");
+        ros.RegisterPublisher<Float32Msg>("/arm/scale");
+        ros.RegisterPublisher<PointMsg>("/arm/wipe_begin");
+        ros.RegisterPublisher<BoolMsg>("/arm/wipe_toggle");
+        ros.RegisterPublisher<PointMsg>("/arm/wipe_adjust");
+        ros.RegisterPublisher<BoolMsg>("/arm/go_home");
         if (instance != null)
         {
             Debug.Log("Uh oh");
@@ -38,7 +48,7 @@ public class RobotActions : MonoBehaviour
 
     }
 
-    public void PickUpBlueCup()
+    /*public void PickUpBlueCup()
     {
         if (this.state == RobotState.PICK_ON_MOVE)
         {
@@ -46,6 +56,26 @@ public class RobotActions : MonoBehaviour
             ros.Publish("/arm/pickup/blue_cup", new BoolMsg(true));
         }
 
+    }*/
+
+    /*public void PickUpBlueCup()
+    {
+        if (this.state == RobotState.PICK_ON_MOVE)
+        {
+            this.state = RobotState.HOLDING;
+            ros.Publish("/arm/pickup/blue_cup", new BoolMsg(true));
+        }
+
+    }*/
+
+    public void PickUpPrism()
+    {
+        Debug.Log("Pickup" + this.state);
+        if (this.state == RobotState.PICK_ON_MOVE)
+        {
+            this.state = RobotState.HOLDING;
+            ros.Publish("/arm/pickup_prism", new StringMsg("Red"));
+        }
     }
 
     public void PlaceInBox()
@@ -81,6 +111,95 @@ public class RobotActions : MonoBehaviour
         msg.y = transform.y;
         msg.z = transform.z;
         ros.Publish("/arm/pickup_adjust", msg);
+    }
+
+    public void SetScale(float scale)
+    {
+        ros.Publish("/arm/scale", new Float32Msg(scale));
+    }
+
+    public void TogglePoint1(bool state)
+    {
+        /*ros.Publish("/arm/pickup_toggle", new BoolMsg(state));
+        Debug.Log("TOGGLED " + state);*/
+
+        //TODO: DO SOMETHING
+    }
+
+    public void CreateFirstPoint(Vector3 transform)
+    {
+        if (this.state == RobotState.PLANNING)
+        {
+            GameHandler.instance.point2.GetComponent<Point2>().Begin(true);
+        }
+    }
+
+    public void CreateSecondPoint(Vector3 transform)
+    {
+        if (this.state == RobotState.PLANNING)
+        {
+            GameHandler.instance.point3.GetComponent<Point3>().Begin(true);
+        }
+    }
+
+    public void CreateThirdPoint(Vector3 transform)
+    {
+        if (this.state == RobotState.PLANNING)
+        {
+            GameHandler.instance.point4.GetComponent<Point4>().Begin(true);
+        }
+    }
+
+    public void CreateFourthPoint(Vector3 center)
+    {
+        Debug.Log("X: " + center.x + " Y: " + center.y + " Z: " + center.z);
+        PointMsg msg = new PointMsg();
+        msg.x = center.x;
+        msg.y = center.y;
+        msg.z = center.z;
+        Debug.Log("State: " + this.state);
+        if (this.state == RobotState.PLANNING)
+        {
+            Debug.Log("If the state is planning how the fuck did we not get here");
+            //publish
+            ros.Publish("/arm/wipe_begin", msg);
+            this.state = RobotState.WIPING;           
+            
+        }
+    }
+
+    public void ToggleArmController(bool state)
+    {
+        ros.Publish("/arm/wipe_toggle", new BoolMsg(state));
+    }
+
+    public void MoveArm(Vector3 transform)
+    {
+        PointMsg msg = new PointMsg();
+        msg.x = transform.x;
+        msg.y = transform.y;
+        msg.z = transform.z;
+        ros.Publish("/arm/wipe_adjust", msg);
+    }
+
+    public void GoHome()
+    {
+        ros.Publish("/arm/go_home", new BoolMsg(true));
+    }
+
+    public void ToggleInsertAdjust(bool state)
+    {
+        ros.Publish("/arm/insert_toggle", new BoolMsg(state));
+        Debug.Log("TOGGLED " + state);
+    }
+
+    public void InsertAdjust(Vector3 transform)
+    {
+        PointMsg msg = new PointMsg();
+        msg.x = transform.x;
+        msg.y = transform.y;
+        msg.z = transform.z;
+        ros.Publish("/arm/insert_adjust", msg);
     }
 
     // Update is called once per frame

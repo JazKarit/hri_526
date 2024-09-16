@@ -35,6 +35,12 @@ public class GameHandler : MonoBehaviour
     public GameObject gripper;
 
     public GameObject pourAdjuster;
+    public GameObject grabScale;
+    public GameObject point1;
+    public GameObject point2;
+    public GameObject point3;
+    public GameObject point4;
+    public GameObject armController;
 
 
     //Statistics (public for debugging)
@@ -72,11 +78,14 @@ public class GameHandler : MonoBehaviour
     {
         switch (msg.data)
         {
-            case "blue_cup grabbed":
-                pourAdjuster.SetActive(true);
+            case "prism adjust":
+                grabAdjuster.GetComponent<GrabAdjuster>().Begin(true);
                 break;
-            case "arm hover":
-                grabAdjuster.GetComponent<GrabAdjuster>().Begin();
+            case "insert adjust":
+                grabAdjuster.GetComponent<GrabAdjuster>().Begin(false);
+                break;
+            case "begin wipe":
+                armController.GetComponent<ArmController>().Begin(true);
                 break;
         }
     }
@@ -198,6 +207,12 @@ public class GameHandler : MonoBehaviour
     {
         RobotActions.instance.state = RobotActions.RobotState.IDLE;
         PourToggle(false);
+        armController.GetComponent<ArmController>().Deactivate();
+        point1.GetComponent<Point1>().Deactivate();
+        point2.GetComponent<Point2>().Deactivate();
+        point3.GetComponent<Point3>().Deactivate();
+        point4.GetComponent<Point4>().Deactivate();
+        RobotActions.instance.GoHome();
     }
 
     public void SpeechPour()
@@ -211,6 +226,19 @@ public class GameHandler : MonoBehaviour
         ros.Publish("/arm/pour", new Float32Msg(angle));
     }
 
+    public void ScaleToggle(bool toggle)
+    {
+        grabScale.GetComponent<AdjustScale>().set(toggle);
+        if (toggle)
+        {
+            Vector3 position = new Vector3();
+            position.x = gripper.transform.position.y + 0.1f;
+            position.y = gripper.transform.position.x;
+            position.z = gripper.transform.position.z;
+            grabScale.GetComponent<AdjustScale>().parent.transform.position = position;
+        }
+    }
+
     public void PourToggle(bool toggle)
     {
         ros.Publish("/arm/pour_toggle", new BoolMsg(toggle));
@@ -222,12 +250,27 @@ public class GameHandler : MonoBehaviour
         }
     }
 
-    
 
-    public void SpeachTask()
+
+    /*public void SpeachTask()
     {
         active = true;
         RobotActions.instance.state = RobotActions.RobotState.PICK_ON_MOVE;
+        watchingCup = true;
+    }*/
+    public void SpeechSort()
+    {
+        Debug.Log("I wanna sort stuff");
+        active = true;
+        RobotActions.instance.state = RobotActions.RobotState.PICK_ON_MOVE;
+        watchingCup = true;
+    }
+
+    public void SpeechWipe()
+    {
+        active = true;
+        RobotActions.instance.state = RobotActions.RobotState.PLANNING;
+        point1.GetComponent<Point1>().Begin(true);
         watchingCup = true;
     }
 
@@ -252,7 +295,7 @@ public class GameHandler : MonoBehaviour
         if (testFlag)
         {
             //StartTrial();
-            grabAdjuster.GetComponent<GrabAdjuster>().Begin();
+            grabAdjuster.GetComponent<GrabAdjuster>().Begin(true);
             testFlag = false;
         }
 
