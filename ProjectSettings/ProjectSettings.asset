@@ -135,7 +135,10 @@ PlayerSettings:
     16:9: 1
     Others: 1
   bundleVersion: 0.1
-  preloadedAssets: []
+  preloadedAssets:
+  - {fileID: 3173775724853401387, guid: 7aaada7313820ce4e9717cbdbec05273, type: 2}
+  - {fileID: 5136644072081600858, guid: 7e6a2b14e9095e842b63e6c4eca81612, type: 2}
+  - {fileID: -5985843953632218107, guid: 10bffd54c8966f44bbacec6fc7a6eb22, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -616,13 +619,13 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: HoloLensProjectASASort
+  metroPackageName: HRIProject
   metroPackageVersion: 1.0.0.0
-  metroCertificatePath: Assets\WSATestCertificate.pfx
+  metroCertificatePath: Assets/WSATestCertificate.pfx
   metroCertificatePassword: 
-  metroCertificateSubject: DefaultCompany
-  metroCertificateIssuer: DefaultCompany
-  metroCertificateNotAfter: 80c547713bf3da01
+  metroCertificateSubject: hrigroup
+  metroCertificateIssuer: hrigroup
+  metroCertificateNotAfter: 001d496a4034dc01
   metroApplicationDescription: Template_3D
   wsaImages: {}
   metroTileShortName: AR_HoloLens
