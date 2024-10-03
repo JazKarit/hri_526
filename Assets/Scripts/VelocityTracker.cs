@@ -19,7 +19,7 @@ public class VelocityTracker : MonoBehaviour
     public Vector3 avgVel;
     private LineRenderer lineRenderer;
     public float scale = 20;
-    public Material lineMaterial = new Material(Shader.Find("Sprites/Default"));
+    public Material lineMaterial;
     public float thresh = 0.002f;
     public float mag = 0.0f;
     public float last = 0.0f;
@@ -30,7 +30,8 @@ public class VelocityTracker : MonoBehaviour
     
     // Start is called before the first frame update
     void Start()
-    {
+    {   
+        lineMaterial=new Material(Shader.Find("Sprites/Default"));
         velbuffers = new Vector3[bufferSize];
         posBuffer = new Vector3[bufferSize];
         lineRenderer = gameObject.AddComponent<LineRenderer>();

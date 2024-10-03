@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.2257134, b: 0.30692226, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3497,6 +3497,7 @@ GameObject:
   - component: {fileID: 472789823}
   - component: {fileID: 472789826}
   - component: {fileID: 472789827}
+  - component: {fileID: 472789828}
   m_Layer: 0
   m_Name: Located Anchor
   m_TagString: Untagged
@@ -3705,6 +3706,19 @@ MonoBehaviour:
     selector: {fileID: 0}
     selectorLocked: 0
     selectable: 0
+--- !u!114 &472789828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472789821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cb3acce89d516e479f4f7600b8f125d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  qrTracker: {fileID: 1024813818}
 --- !u!1 &488386552
 GameObject:
   m_ObjectHideFlags: 0
@@ -13213,7 +13227,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1556847497
 Transform:
   m_ObjectHideFlags: 0
@@ -16450,10 +16464,14 @@ PrefabInstance:
       objectReference: {fileID: 2800000, guid: 5ced9c7e98be2e941a88b5d0a16b2a3b, type: 3}
     - target: {fileID: 5487525929659315375, guid: 7dcfff6844214374ea8a0d12bba9f451, type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5487525929659315375, guid: 7dcfff6844214374ea8a0d12bba9f451, type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5487525929659315375, guid: 7dcfff6844214374ea8a0d12bba9f451, type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5487525929659315375, guid: 7dcfff6844214374ea8a0d12bba9f451, type: 3}
@@ -16465,7 +16483,15 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1557018710}
     - target: {fileID: 5487525929659315375, guid: 7dcfff6844214374ea8a0d12bba9f451, type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 472789828}
+    - target: {fileID: 5487525929659315375, guid: 7dcfff6844214374ea8a0d12bba9f451, type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5487525929659315375, guid: 7dcfff6844214374ea8a0d12bba9f451, type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5487525929659315375, guid: 7dcfff6844214374ea8a0d12bba9f451, type: 3}
@@ -16477,6 +16503,10 @@ PrefabInstance:
       value: Disappear
       objectReference: {fileID: 0}
     - target: {fileID: 5487525929659315375, guid: 7dcfff6844214374ea8a0d12bba9f451, type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: BakePosition
+      objectReference: {fileID: 0}
+    - target: {fileID: 5487525929659315375, guid: 7dcfff6844214374ea8a0d12bba9f451, type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: ASAScript, Assembly-CSharp
       objectReference: {fileID: 0}
@@ -16485,7 +16515,15 @@ PrefabInstance:
       value: ObjectProperties, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5487525929659315375, guid: 7dcfff6844214374ea8a0d12bba9f451, type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: QRPositionManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5487525929659315375, guid: 7dcfff6844214374ea8a0d12bba9f451, type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5487525929659315375, guid: 7dcfff6844214374ea8a0d12bba9f451, type: 3}
+      propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 6055314345997109590, guid: 7dcfff6844214374ea8a0d12bba9f451, type: 3}
