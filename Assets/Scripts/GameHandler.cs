@@ -268,6 +268,7 @@ public class GameHandler : MonoBehaviour
 
     public void SpeechWipe()
     {
+        Debug.Log("I wanna wipe stuff");
         active = true;
         RobotActions.instance.state = RobotActions.RobotState.PLANNING;
         point1.GetComponent<Point1>().Begin(true);
