@@ -100,7 +100,6 @@ public class WipeSurface : MonoBehaviour
             {
                 if (watchDog > points.Length)
                 {
-                    Debug.Log("watchDog");
                     break;
                 }
                 watchDog++;
@@ -122,7 +121,6 @@ public class WipeSurface : MonoBehaviour
                 }
                 if (!PointNode.isLeftOfLine(leftNode, rightNode, lastNode))
                 {
-                    Debug.Log("left of line");
                     PointNode other = rightNode.next;
                     bool valid = true;
                     // while (other != leftNode)
@@ -145,7 +143,6 @@ public class WipeSurface : MonoBehaviour
                             !PointNode.isLeftOfLine(lastNode, leftNode, pointsOnPlane[i]))
                         {
                             valid = false;
-                            Debug.Log("invalid");
                             break;
                         }
                     }
