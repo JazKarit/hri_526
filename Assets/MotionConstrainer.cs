@@ -32,6 +32,9 @@ public class MotionConstrainer : MonoBehaviour
     {
         lastPos = transform.position;
         lastRot = transform.rotation;
+        transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+        transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
+        transform.GetChild(1).GetChild(2).gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -94,6 +97,7 @@ public class MotionConstrainer : MonoBehaviour
 
 
                 transform.position = (unconstrainedMovment - (Vector3.Dot(normal, unconstrainedMovment) * normal)) + lastPos;
+                transform.rotation = lastRot;
                 break;
 
             case ConstraintType.ROTATION:
@@ -114,6 +118,8 @@ public class MotionConstrainer : MonoBehaviour
                 this.mode = ConstraintType.ROTATION;
                 break;
         }
+
+        transform.GetChild(1).rotation = zone.transform.rotation;
 
         isColliding = false;
         lastPos = transform.position;
@@ -144,39 +150,6 @@ public class MotionConstrainer : MonoBehaviour
         return (u >= 0) && (v >= 0) && (u + v <= 1);
     }
 
-    //public static bool IsPointInTriangle(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 point)
-    //{
-    //    // Calculate the area of the triangle
-    //    float area = 0.5f * (-p2.y * p3.x + p1.y * (-p2.x + p3.x) + p1.x * (p2.y - p3.y) + p2.x * p3.y);
-
-    //    // Calculate the area of the triangle with the point
-    //    float area1 = 0.5f * (-p2.y * point.x + p1.y * (-p2.x + point.x) + p1.x * (p2.y - point.y) + p2.x * point.y);
-    //    float area2 = 0.5f * (-point.y * p3.x + p1.y * (-point.x + p3.x) + p1.x * (point.y - p3.y) + point.x * p3.y);
-    //    float area3 = 0.5f * (-p1.y * p3.x + point.y * (-p1.x + p3.x) + point.x * (p1.y - p3.y) + p1.x * p3.y);
-
-    //    // Check if the sum of area1, area2, and area3 is equal to the area of the triangle
-    //    return Mathf.Approximately(area, area1 + area2 + area3);
-    //    //return Mathf.Abs(area-(area1 + area2 + area3)) < .000001;
-    //}
-
-    //public static bool isInTriangle(Vector2 firstPt, Vector2 secondPt, Vector2 thirdPt, Vector2 check)
-    //{
-    //    return !isLeftOfLine(firstPt, secondPt, check) &&
-    //           !isLeftOfLine(secondPt, thirdPt, check) &&
-    //           !isLeftOfLine(thirdPt, firstPt, check);
-    //}
-
-    //public static bool isLeftOfLine(Vector2 firstPt, Vector2 secondPt, Vector2 check)
-    //{
-
-    //    float A = secondPt.y - firstPt.y;
-    //    float B = firstPt.x - secondPt.x;
-    //    float C = -1 * firstPt.y * B - secondPt.x * A;
-
-    //    return A * check.x + B * check.y + C < 0;
-    //}
-
-
     Vector3 ProjectPointOntoPlane(Vector3 normal, Vector3 planePoint, Vector3 point)
     {
         // Normalize the normal vector
@@ -196,16 +169,25 @@ public class MotionConstrainer : MonoBehaviour
 
     public void startGlide()
     {
+        transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+        transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
+        transform.GetChild(1).GetChild(2).gameObject.SetActive(true);
         this.mode = ConstraintType.GLIDE;
     }
 
     public void startInsert()
     {
+        transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+        transform.GetChild(1).GetChild(1).gameObject.SetActive(true);
+        transform.GetChild(1).GetChild(2).gameObject.SetActive(false);
         this.mode = ConstraintType.NORMAL;
     }
 
     public void startRotation()
     {
+        transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
+        transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
+        transform.GetChild(1).GetChild(2).gameObject.SetActive(false);
         this.mode = ConstraintType.ROTATION;
     }
 
@@ -213,6 +195,8 @@ public class MotionConstrainer : MonoBehaviour
     {
         this.mode = ConstraintType.RECTIFY;
     }
+
+    //TODO start no constraint ang hide all mode cues
 
 
 }

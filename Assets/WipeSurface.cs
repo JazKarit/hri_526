@@ -48,6 +48,18 @@ public class WipeSurface : MonoBehaviour
         }
     }
 
+    int[] InvertTriangles(int[] triangles)
+    {
+        int[] invertedTriangles = new int[triangles.Length];
+        for (int i = 0; i < triangles.Length; i+=3)
+        {
+            invertedTriangles[i] = triangles[i+2];
+            invertedTriangles[i+1] = triangles[i+1];
+            invertedTriangles[i+2] = triangles[i];
+        }
+        return invertedTriangles;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -192,11 +204,15 @@ public class WipeSurface : MonoBehaviour
 
             // }
 
+            int[] invertedTriangles = InvertTriangles(triangles);
 
+            int[] allTriangles = new int[triangles.Length + invertedTriangles.Length];
+            triangles.CopyTo(allTriangles, 0);
+            invertedTriangles.CopyTo(allTriangles, triangles.Length);
 
             Mesh mesh = new Mesh();
             mesh.vertices = points;
-            mesh.triangles = triangles;
+            mesh.triangles = allTriangles;
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
             GetComponent<MeshFilter>().mesh = mesh;

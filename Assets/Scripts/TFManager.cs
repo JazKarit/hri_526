@@ -38,11 +38,15 @@ public class TFManager : MonoBehaviour
     {
         foreach (TFObject tfo in subscribers)
         {
+            if (tfo.gameObject == null) continue;
             bool found = false;
             foreach (TransformStamped transformStampedMsg in TFMsg.transforms)
             {
+                Debug.Log(transformStampedMsg.child_frame_id);
                 if (tfo.name.Equals(transformStampedMsg.child_frame_id))
                 {
+                    
+                    Debug.Log(tfo.name);
                     found = true;
                     tfo.gameObject.SetActive(true);
                     if (tfo.selector != null && !tfo.selectorLocked)
