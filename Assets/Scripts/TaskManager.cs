@@ -128,7 +128,8 @@ public class TaskManager : MonoBehaviour
         pegBox.SetActive(false);
         wipeSurface.SetActive(false);
 
-        CommandRecived("manual ");
+        CommandRecived("manual");
+        CommandRecived("stop");
     }
 
     public void CommandRecived(StringMsg msg)
