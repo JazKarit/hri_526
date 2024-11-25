@@ -4784,6 +4784,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dirtParent: {fileID: 3215830}
+  antiParticleParent: {fileID: 2069817363}
   eef: {fileID: 1797816193}
   wipeSurface: {fileID: 2077781942}
   unwipedMat: {fileID: 2100000, guid: 30d693ff62c571241b431ef4e206b09a, type: 2}
@@ -5685,6 +5686,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 867183970}
   m_Mesh: {fileID: 4300000, guid: 5702f2aa065381d489668e5042b2d92c, type: 3}
+--- !u!1 &873092770 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4690405356863583865, guid: 6f1d1780a01202a4f9ca074ac5181ce0, type: 3}
+  m_PrefabInstance: {fileID: 642047712}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &886164647
 GameObject:
   m_ObjectHideFlags: 0
@@ -6299,6 +6305,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dirtParent: {fileID: 1641481980}
+  antiParticleParent: {fileID: 1008537203}
   eef: {fileID: 1797816193}
   wipeSurface: {fileID: 2077781942}
   unwipedMat: {fileID: 2100000, guid: 30d693ff62c571241b431ef4e206b09a, type: 2}
@@ -7317,6 +7324,9 @@ MonoBehaviour:
   wipeSquare: {fileID: 734403158}
   wipePentagon: {fileID: 1007396021}
   wipeL: {fileID: 901045874}
+  squarePointManager: {fileID: 734403160}
+  pentagonPointManager: {fileID: 1007396023}
+  lPointManager: {fileID: 901045876}
   positionSquare: {fileID: 0}
   positionPentagon: {fileID: 0}
   positionL: {fileID: 0}
@@ -7753,6 +7763,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dirtParent: {fileID: 1184919286}
+  antiParticleParent: {fileID: 873092770}
   eef: {fileID: 1797816193}
   wipeSurface: {fileID: 2077781942}
   unwipedMat: {fileID: 2100000, guid: 30d693ff62c571241b431ef4e206b09a, type: 2}
@@ -7760,6 +7771,11 @@ MonoBehaviour:
   threshhold: 0.05
   mode: 0
   jumpFactor: 10
+--- !u!1 &1008537203 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8258546910741494454, guid: 46e81ff7549f97e47860a54c59a20d31, type: 3}
+  m_PrefabInstance: {fileID: 1453343448}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1023767582
 GameObject:
   m_ObjectHideFlags: 0
@@ -17290,6 +17306,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoConstraintSelection: 1
   selectedConstraints: []
+--- !u!1 &2069817363 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 414609116297744587, guid: 129eba89f0ffa814499fe7a2fe070d69, type: 3}
+  m_PrefabInstance: {fileID: 1050716005}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2073914189
 GameObject:
   m_ObjectHideFlags: 0

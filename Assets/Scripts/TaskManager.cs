@@ -172,6 +172,7 @@ public class TaskManager : MonoBehaviour
         DirtPointManager.WipePointMode wm;
         if (args[1].Equals("manual")) goto Wipe_Manual;
         //Poly wipe
+        currWipe.InterfaceType = "constrained";
         wipeSurface.SetActive(true);
         WipePoint.uiPoint.SetActive(true);
         state = TaskState.WIPE_POLYGON;
@@ -188,7 +189,6 @@ public class TaskManager : MonoBehaviour
         switch (args[2])
         {
             case "square":
-                currWipe.InterfaceType = "constrained";
                 currWipe.Shape = "square";
                 wipeSquare.SetActive(true);
                 wipeSquare.transform.position = positionSquare.transform.position;
@@ -196,7 +196,6 @@ public class TaskManager : MonoBehaviour
                 wipeSquare.GetComponent<DirtPointManager>().mode = wm;
                 break;
             case "pentagon":
-                currWipe.InterfaceType = "constrained";
                 currWipe.Shape = "pentagon";
                 wipePentagon.SetActive(true);
                 wipePentagon.transform.position = positionPentagon.transform.position;
@@ -204,7 +203,6 @@ public class TaskManager : MonoBehaviour
                 wipePentagon.GetComponent<DirtPointManager>().mode = wm;
                 break;
             case "l":
-                currWipe.InterfaceType = "constrained";
                 currWipe.Shape = "L";
                 wipeL.SetActive(true);
                 wipeL.transform.position = positionL.transform.position;
