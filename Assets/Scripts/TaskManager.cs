@@ -1,0 +1,168 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using RosMessageTypes.Std;
+using Unity.Robotics.ROSTCPConnector;
+using System.Diagnostics;
+
+public class Metrics
+{
+    // One csv wipe
+    // one csv insert
+    // each trial is a row
+}
+
+public class TaskManager : MonoBehaviour
+{
+    public enum TaskState {
+        IDLE,
+        WIPE_POLYGON,
+        WIPE_MANUAL,
+        INSERT
+    }
+    public TaskState state = TaskState.IDLE;
+    public MotionConstrainer motionConstrainer;
+    public GameObject wipeSquare;
+    public GameObject wipePentagon;
+    public GameObject wipeL;
+    public GameObject positionSquare;
+    public GameObject positionPentagon;
+    public GameObject positionL;
+    public GameObject EEF;
+    public GameObject pegBox;
+    public GameObject wipeSurface;
+
+    private Stopwatch sw;
+    
+    
+    
+    // Start is called before the first frame update
+    void Start()
+    {
+        sw = new Stopwatch();
+        ROSConnection.GetOrCreateInstance().Subscribe<StringMsg>("unity/commands", CommandRecived);
+
+        wipeSquare.SetActive(false);
+        wipePentagon.SetActive(false);
+        wipeL.SetActive(false);
+        EEF.SetActive(false);
+        pegBox.SetActive(false);
+        wipeSurface.SetActive(false);
+
+    }
+
+    public void CommandRecived(StringMsg msg) {
+        string[] args = msg.data.Split(' ');
+        //Debug.Log(msg.data);
+        
+
+        //Sorry about this v
+
+        if (args[0].Equals("stop")) goto Stop;
+        //Start
+
+        if (args[0].Equals("wipe")) goto Wipe;
+        //Insertion
+        if (args[0].Equals("manual")) goto Insertion_Manual;
+        
+        //Automatic insertion
+        motionConstrainer.constrained = true;
+        goto Insertion_Common;
+
+        Insertion_Manual:
+        //Manual Insertion
+        motionConstrainer.constrained = false;
+        
+        Insertion_Common:
+        sw.Restart();
+        EEF.SetActive(true);
+        pegBox.SetActive(true);
+        state = TaskState.INSERT;
+        return;
+
+        Wipe:
+        sw.Restart();
+        DirtPointManager.WipePointMode wm;
+        if (args[1].Equals("manual")) goto Wipe_Manual;
+        //Poly wipe
+        wipeSurface.SetActive(true);
+        WipePoint.uiPoint.SetActive(true);
+        state = TaskState.WIPE_POLYGON;
+        
+        wm = DirtPointManager.WipePointMode.SURFACE;
+        goto Wipe_General;
+        Wipe_Manual:
+        EEF.SetActive(true);
+        motionConstrainer.constrained = false;
+        wm = DirtPointManager.WipePointMode.EEF;
+        state = TaskState.WIPE_MANUAL;
+        Wipe_General:
+        switch (args[2]) {
+            case "square" :
+                wipeSquare.SetActive(true);
+                wipeSquare.transform.position = positionSquare.transform.position;
+                wipeSquare.GetComponent<DirtPointManager>().Unwipe();
+                wipeSquare.GetComponent<DirtPointManager>().mode = wm;
+            break;
+            case "pentagon":
+                wipePentagon.SetActive(true);
+                wipePentagon.transform.position = positionPentagon.transform.position;
+                wipePentagon.GetComponent<DirtPointManager>().Unwipe();
+                wipePentagon.GetComponent<DirtPointManager>().mode = wm;
+            break;
+            case "l":
+                wipeL.SetActive(true);
+                wipeL.transform.position = positionL.transform.position;
+                wipeL.GetComponent<DirtPointManager>().Unwipe();
+                wipeL.GetComponent<DirtPointManager>().mode = wm;
+            break;
+        }
+        return;
+
+        Stop:
+        sw.Stop();
+        switch (state) {
+            case TaskState.IDLE:
+
+            break;
+            case TaskState.WIPE_MANUAL:
+
+                wipeL.SetActive(false);
+                wipeSquare.SetActive(false);
+                wipePentagon.SetActive(false);
+                EEF.SetActive(false);
+
+            break;
+            case TaskState.WIPE_POLYGON:
+
+                wipeL.SetActive(false);
+                wipeSquare.SetActive(false);
+                wipePentagon.SetActive(false);
+                wipeSurface.GetComponent<MeshFilter>().mesh.Clear();
+                wipeSurface.SetActive(false);
+                
+                foreach (GameObject wipePoint in WipePoint.points) {
+                    Destroy(wipePoint);
+                }
+                WipePoint.points.Clear();
+                WipePoint.uiPoint.SetActive(false);
+
+            break;
+            case TaskState.INSERT:
+                EEF.SetActive(false);
+                pegBox.SetActive(false);
+                motionConstrainer.startNone();
+            break;
+        }
+        state = TaskState.IDLE;
+        //Debug.Log("stop");
+        
+         
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}

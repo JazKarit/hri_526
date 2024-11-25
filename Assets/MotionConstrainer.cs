@@ -16,16 +16,14 @@ public class MotionConstrainer : MonoBehaviour
         RECTIFY
     }
 
+    public bool constrained;
     public ConstraintType mode = ConstraintType.NONE;
 
-    private Vector3 lastPos;
-    private Quaternion lastRot;
-    public Vector3 debug;
-    public GameObject dot;
+    public Vector3 lastPos;
+    public Quaternion lastRot;
     private bool isColliding = false;
     int count = 0;
 
-    public GameObject[] debugPoints;
 
     // Start is called before the first frame update
     void Start()
@@ -53,7 +51,6 @@ public class MotionConstrainer : MonoBehaviour
             case ConstraintType.GLIDE:
                 count = count % zone.GetComponent<MeshFilter>().mesh.triangles.Length;
                 Vector3 nearestPoint = ProjectPointOntoPlane(normal, zone.transform.position, transform.position);
-                dot.transform.position = nearestPoint;
                 Vector3 xAxis = Vector3.Normalize((zone.transform.rotation * zone.GetComponent<MeshFilter>().mesh.vertices[1]) * zone.transform.localScale[0] + zone.transform.position - (zone.transform.rotation * zone.GetComponent<MeshFilter>().mesh.vertices[0]) * zone.transform.localScale[0] + zone.transform.position);
                 Vector3 yAxis = Vector3.Cross(xAxis, Vector3.Normalize(normal));
                 Vector2[] pointsOnPlane = new Vector2[zone.GetComponent<MeshFilter>().mesh.vertices.Length];
@@ -81,9 +78,9 @@ public class MotionConstrainer : MonoBehaviour
                     {
                         inside = true;
                         Debug.Log("Point in Plane");
-                        debugPoints[0].transform.position = (zone.transform.rotation * zone.GetComponent<MeshFilter>().mesh.vertices[zone.GetComponent<MeshFilter>().mesh.triangles[i]]) * zone.transform.localScale[0] + zone.transform.position;
-                        debugPoints[1].transform.position = (zone.transform.rotation * zone.GetComponent<MeshFilter>().mesh.vertices[zone.GetComponent<MeshFilter>().mesh.triangles[i + 1]]) * zone.transform.localScale[0] + zone.transform.position;
-                        debugPoints[2].transform.position = (zone.transform.rotation * zone.GetComponent<MeshFilter>().mesh.vertices[zone.GetComponent<MeshFilter>().mesh.triangles[i + 2]]) * zone.transform.localScale[0] + zone.transform.position;
+                        //debugPoints[0].transform.position = (zone.transform.rotation * zone.GetComponent<MeshFilter>().mesh.vertices[zone.GetComponent<MeshFilter>().mesh.triangles[i]]) * zone.transform.localScale[0] + zone.transform.position;
+                        //debugPoints[1].transform.position = (zone.transform.rotation * zone.GetComponent<MeshFilter>().mesh.vertices[zone.GetComponent<MeshFilter>().mesh.triangles[i + 1]]) * zone.transform.localScale[0] + zone.transform.position;
+                       // debugPoints[2].transform.position = (zone.transform.rotation * zone.GetComponent<MeshFilter>().mesh.vertices[zone.GetComponent<MeshFilter>().mesh.triangles[i + 2]]) * zone.transform.localScale[0] + zone.transform.position;
                         break;
                     }
                 }
@@ -169,6 +166,7 @@ public class MotionConstrainer : MonoBehaviour
 
     public void startGlide()
     {
+        if (!constrained) return;
         transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
         transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
         transform.GetChild(1).GetChild(2).gameObject.SetActive(true);
@@ -177,6 +175,7 @@ public class MotionConstrainer : MonoBehaviour
 
     public void startInsert()
     {
+        if (!constrained) return;
         transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
         transform.GetChild(1).GetChild(1).gameObject.SetActive(true);
         transform.GetChild(1).GetChild(2).gameObject.SetActive(false);
@@ -185,15 +184,24 @@ public class MotionConstrainer : MonoBehaviour
 
     public void startRotation()
     {
+        if (!constrained) return;
         transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
         transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
         transform.GetChild(1).GetChild(2).gameObject.SetActive(false);
         this.mode = ConstraintType.ROTATION;
     }
 
+    public void startNone() {
+        transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+        transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
+        transform.GetChild(1).GetChild(2).gameObject.SetActive(false);
+        this.mode = ConstraintType.NONE;
+    }
+
     public void startRectify()
     {
-        this.mode = ConstraintType.RECTIFY;
+        if (!constrained) return;
+        this.startRotation();
     }
 
     //TODO start no constraint ang hide all mode cues

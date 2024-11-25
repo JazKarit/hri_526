@@ -6,16 +6,15 @@ public class WipePoint : MonoBehaviour
 {
     public static List<GameObject> points = new List<GameObject>();
     public static Vector3 allPointsPlaneNormal;
+    public static GameObject uiPoint;
     public bool isUI = true;
     public GameObject prefab;
+    public TextMesh textMesh;
 
     public GameObject ghost;
 
-    public GameObject debug;
 
     public int debugSpawnCounter;
-
-    public GameObject textMesh;
 
 
 
@@ -26,18 +25,15 @@ public class WipePoint : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        debugSpawnCounter = isUI?-1:id;
+        if (this.isUI) {
+            uiPoint = gameObject;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (this.debugSpawnCounter > 0) {
-            this.debugSpawnCounter--;
-        }else if (this.debugSpawnCounter == 0) {
-            this.debugSpawnCounter--;
-            points.Add(this.gameObject);
-        }
+        
         if (this.isUI) {
             this.transform.position = GameObject.Find("Wipe Point Spawner").transform.position;
         }
@@ -55,6 +51,9 @@ public class WipePoint : MonoBehaviour
     public void setIsUI(bool isUI)
     {
         this.isUI = isUI;
+        if (this.isUI) {
+            uiPoint = gameObject;
+        }
     }
 
     public void Manifest() {
