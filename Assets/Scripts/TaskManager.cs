@@ -30,12 +30,12 @@ struct WipeData
     // Method to display wipe information
     public void DisplayWipeInfo()
     {
-        Console.WriteLine($"Name: {Name}");
-        Console.WriteLine($"Interface Type: {InterfaceType}");
-        Console.WriteLine($"Shape: {Shape}");
-        Console.WriteLine($"Time: {Time.Hours} hours {Time.Minutes} minutes {Time.Seconds} seconds");
-        Console.WriteLine($"Good Points: {GoodPoints}");
-        Console.WriteLine($"Bad Points: {BadPoints}");
+        UnityEngine.Debug.Log($"Name: {Name}");
+        UnityEngine.Debug.Log($"Interface Type: {InterfaceType}");
+        UnityEngine.Debug.Log($"Shape: {Shape}");
+        UnityEngine.Debug.Log($"Time: {Time.Hours} hours {Time.Minutes} minutes {Time.Seconds} seconds");
+        UnityEngine.Debug.Log($"Good Points: {GoodPoints}");
+        UnityEngine.Debug.Log($"Bad Points: {BadPoints}");
     }
 }
 
@@ -69,15 +69,15 @@ struct InsertData
     // Method to display insert information
     public void DisplayInsertInfo()
     {
-        Console.WriteLine($"Name: {Name}");
-        Console.WriteLine($"Constraint Type: {ConstraintType}");
-        Console.WriteLine($"Peg Size: {PegSize}");
-        Console.WriteLine($"Peg Color: {PegColor}");
-        Console.WriteLine($"Time: {Time.Hours} hours {Time.Minutes} minutes {Time.Seconds} seconds");
-        Console.WriteLine($"Collisions: {Collisions}");
-        Console.WriteLine($"Resets: {Resets}");
-        Console.WriteLine($"Success: {Success}");
-        Console.WriteLine($"Constraint Mode Toggles: {ConstraintModeToggles}");
+        UnityEngine.Debug.Log($"Name: {Name}");
+        UnityEngine.Debug.Log($"Constraint Type: {ConstraintType}");
+        UnityEngine.Debug.Log($"Peg Size: {PegSize}");
+        UnityEngine.Debug.Log($"Peg Color: {PegColor}");
+        UnityEngine.Debug.Log($"Time: {Time.Hours} hours {Time.Minutes} minutes {Time.Seconds} seconds");
+        UnityEngine.Debug.Log($"Collisions: {Collisions}");
+        UnityEngine.Debug.Log($"Resets: {Resets}");
+        UnityEngine.Debug.Log($"Success: {Success}");
+        UnityEngine.Debug.Log($"Constraint Mode Toggles: {ConstraintModeToggles}");
     }
 }
 
@@ -128,8 +128,8 @@ public class TaskManager : MonoBehaviour
         pegBox.SetActive(false);
         wipeSurface.SetActive(false);
 
-        CommandRecived("manual");
-        CommandRecived("stop");
+        CommandRecived(new StringMsg("manual"));
+        CommandRecived(new StringMsg("stop"));
     }
 
     public void CommandRecived(StringMsg msg)
@@ -239,8 +239,8 @@ public class TaskManager : MonoBehaviour
                 EEF.SetActive(false);
                 pegBox.SetActive(false);
                 currInsert.ConstraintModeToggles = motionConstrainer.GetNumToggles();
-                currInsert.time = sw.Elapsed;
-                UnityEngine.Debug.Log(currInsert.DisplayInsertInfo());
+                currInsert.Time = sw.Elapsed;
+                currInsert.DisplayInsertInfo();
                 inserts.Add(currInsert);
                 motionConstrainer.startNone();
                 break;
