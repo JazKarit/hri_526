@@ -128,6 +128,7 @@ public class TaskManager : MonoBehaviour
         pegBox.SetActive(false);
         wipeSurface.SetActive(false);
 
+        CommandRecived("manual ");
     }
 
     public void CommandRecived(StringMsg msg)
@@ -236,6 +237,10 @@ public class TaskManager : MonoBehaviour
             case TaskState.INSERT:
                 EEF.SetActive(false);
                 pegBox.SetActive(false);
+                currInsert.ConstraintModeToggles = motionConstrainer.GetNumToggles();
+                currInsert.time = sw.Elapsed;
+                UnityEngine.Debug.Log(currInsert.DisplayInsertInfo());
+                inserts.Add(currInsert);
                 motionConstrainer.startNone();
                 break;
         }

@@ -126,6 +126,11 @@ public class MotionConstrainer : MonoBehaviour
         count += 3;
     }
 
+    public int GetNumToggles()
+    {
+        return numToggles;
+    }
+
     public static bool IsPointInTriangle(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 point)
     {
         // Calculate the vectors
