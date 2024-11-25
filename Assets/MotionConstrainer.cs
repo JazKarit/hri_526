@@ -24,6 +24,8 @@ public class MotionConstrainer : MonoBehaviour
     private bool isColliding = false;
     int count = 0;
 
+    private int numToggles = 0;
+
 
     // Start is called before the first frame update
     void Start()
@@ -167,6 +169,7 @@ public class MotionConstrainer : MonoBehaviour
     public void startGlide()
     {
         if (!constrained) return;
+        numToggles++;
         transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
         transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
         transform.GetChild(1).GetChild(2).gameObject.SetActive(true);
@@ -176,6 +179,7 @@ public class MotionConstrainer : MonoBehaviour
     public void startInsert()
     {
         if (!constrained) return;
+        numToggles++;
         transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
         transform.GetChild(1).GetChild(1).gameObject.SetActive(true);
         transform.GetChild(1).GetChild(2).gameObject.SetActive(false);
@@ -185,6 +189,7 @@ public class MotionConstrainer : MonoBehaviour
     public void startRotation()
     {
         if (!constrained) return;
+        numToggles++;
         transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
         transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
         transform.GetChild(1).GetChild(2).gameObject.SetActive(false);
@@ -192,6 +197,7 @@ public class MotionConstrainer : MonoBehaviour
     }
 
     public void startNone() {
+        numToggles++;
         transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
         transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
         transform.GetChild(1).GetChild(2).gameObject.SetActive(false);

@@ -4,8 +4,9 @@ using UnityEngine;
 using RosMessageTypes.Std;
 using Unity.Robotics.ROSTCPConnector;
 using System.Diagnostics;
+using System;
 
-struct Wipe
+struct WipeData
 {
     // Fields
     public string InterfaceType;
@@ -16,7 +17,7 @@ struct Wipe
     public int BadPoints;
 
     // Constructor
-    public Wipe(string interfaceType, string shape, TimeSpan time, string name, int goodPoints, int badPoints)
+    public WipeData(string interfaceType, string shape, TimeSpan time, string name, int goodPoints, int badPoints)
     {
         InterfaceType = interfaceType;
         Shape = shape;
@@ -38,7 +39,7 @@ struct Wipe
     }
 }
 
-struct Insert
+struct InsertData
 {
     // Fields
     public string ConstraintType;
@@ -52,7 +53,7 @@ struct Insert
     public int ConstraintModeToggles;
 
     // Constructor
-    public Insert(string constraintType, int pegSize, string pegColor, string name, TimeSpan time, int collisions, int resets, int success, int constraintModeToggles)
+    public InsertData(string constraintType, int pegSize, string pegColor, string name, TimeSpan time, int collisions, int resets, int success, int constraintModeToggles)
     {
         ConstraintType = constraintType;
         PegSize = pegSize;
@@ -103,11 +104,20 @@ public class TaskManager : MonoBehaviour
 
     private Stopwatch sw;
 
+    private List<WipeData> wipes;
+    private List<InsertData> inserts;
+
+    private WipeData currWipe;
+    private InsertData currInsert;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
+        wipes = new List<WipeData>();
+        inserts = new List<InsertData>();
+
         sw = new Stopwatch();
         ROSConnection.GetOrCreateInstance().Subscribe<StringMsg>("unity/commands", CommandRecived);
 
@@ -137,11 +147,13 @@ public class TaskManager : MonoBehaviour
 
         //Automatic insertion
         motionConstrainer.constrained = true;
+        currInsert.ConstraintType = "constrained";
         goto Insertion_Common;
 
     Insertion_Manual:
         //Manual Insertion
         motionConstrainer.constrained = false;
+        currInsert.ConstraintType = "manual";
 
     Insertion_Common:
         sw.Restart();
