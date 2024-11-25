@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class DirtPointManager : MonoBehaviour
 {
     public GameObject dirtParent;
+    public GameObject antiParticleParent;
     public enum WipePointMode {
         DISABLED,
         EEF,
@@ -17,6 +19,7 @@ public class DirtPointManager : MonoBehaviour
     public float threshhold = 0.5f;
     public WipePointMode mode;
     private bool[] isWiped;
+    private bool[] antiParticleIsWiped;
     public int jumpFactor;
     private int offset = 0;
 
@@ -48,6 +51,12 @@ public class DirtPointManager : MonoBehaviour
                     if (Vector3.Distance(dirt.transform.position, eef.transform.position) < threshhold) {
                         SetWiped(i, true, dirt);
                     } 
+                }
+                for (int i = offset; i < antiParticleParent.transform.childCount; i+=jumpFactor) {
+                    GameObject antiParticle = antiParticleParent.transform.GetChild(i).gameObject;
+                    if (Vector3.Distance(antiParticle.transform.position, eef.transform.position) < threshhold) {
+                        antiParticleIsWiped [i] = true;
+                    } 
                 }   
                 break;
             case WipePointMode.SURFACE:
@@ -68,10 +77,20 @@ public class DirtPointManager : MonoBehaviour
                         {
                             SetWiped(j, false, dirt);
                         }
-                    }  
-                    
+                    }    
 
-                    
+                    for (int j = 0; j < antiParticleParent.transform.childCount; j++) {
+                        GameObject dirt = antiParticleParent.transform.GetChild(j).gameObject;
+                        var distance = DistanceToTriangle.GetDistanceToTriangle(antiParticleParent.transform.position, trianglePt1, trianglePt2, trianglePt3);
+                        if (distance < threshhold)
+                        {
+                            antiParticleIsWiped[i] = true;
+                        }
+                        else
+                        {
+                            antiParticleIsWiped [i] = false;
+                        }
+                    }      
                 }
                 break;
         }
@@ -108,5 +127,15 @@ public class DirtPointManager : MonoBehaviour
             GameObject dirt = dirtParent.transform.GetChild(i).gameObject;
             SetWiped(i, false, dirt);
         }
+    }
+
+    public int GetNumWiped()
+    {
+        return isWiped.Count(w => w);
+    }
+
+    public int GetAntiparticlesWiped()
+    {
+        return antiParticleIsWiped.Count(w => w);
     }
 }

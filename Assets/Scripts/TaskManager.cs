@@ -95,6 +95,9 @@ public class TaskManager : MonoBehaviour
     public GameObject wipeSquare;
     public GameObject wipePentagon;
     public GameObject wipeL;
+    public DirtPointManager squarePointManager;
+    public DirtPointManager pentagonPointManager;
+    public DirtPointManager lPointManager;
     public GameObject positionSquare;
     public GameObject positionPentagon;
     public GameObject positionL;
@@ -177,6 +180,7 @@ public class TaskManager : MonoBehaviour
         goto Wipe_General;
     Wipe_Manual:
         EEF.SetActive(true);
+        currWipe.InterfaceType = "manual";
         motionConstrainer.constrained = false;
         wm = DirtPointManager.WipePointMode.EEF;
         state = TaskState.WIPE_MANUAL;
@@ -184,18 +188,24 @@ public class TaskManager : MonoBehaviour
         switch (args[2])
         {
             case "square":
+                currWipe.InterfaceType = "constrained";
+                currWipe.Shape = "square";
                 wipeSquare.SetActive(true);
                 wipeSquare.transform.position = positionSquare.transform.position;
                 wipeSquare.GetComponent<DirtPointManager>().Unwipe();
                 wipeSquare.GetComponent<DirtPointManager>().mode = wm;
                 break;
             case "pentagon":
+                currWipe.InterfaceType = "constrained";
+                currWipe.Shape = "pentagon";
                 wipePentagon.SetActive(true);
                 wipePentagon.transform.position = positionPentagon.transform.position;
                 wipePentagon.GetComponent<DirtPointManager>().Unwipe();
                 wipePentagon.GetComponent<DirtPointManager>().mode = wm;
                 break;
             case "l":
+                currWipe.InterfaceType = "constrained";
+                currWipe.Shape = "L";
                 wipeL.SetActive(true);
                 wipeL.transform.position = positionL.transform.position;
                 wipeL.GetComponent<DirtPointManager>().Unwipe();
@@ -218,6 +228,22 @@ public class TaskManager : MonoBehaviour
                 wipePentagon.SetActive(false);
                 EEF.SetActive(false);
 
+                if (currWipe.Shape == "square")
+                {
+                    currWipe.GoodPoints = squarePointManager.GetNumWiped();
+                    currWipe.BadPoints = squarePointManager.GetAntiparticlesWiped();
+                } else if (currWipe.Shape == "pentagon")
+                {
+                    currWipe.GoodPoints = pentagonPointManager.GetNumWiped();
+                    currWipe.BadPoints = pentagonPointManager.GetAntiparticlesWiped();
+                } else if (currWipe.Shape == "L")
+                {
+                    currWipe.GoodPoints = lPointManager.GetNumWiped();
+                    currWipe.BadPoints = lPointManager.GetAntiparticlesWiped();
+                }
+
+                currWipe.Time = sw.Elapsed;
+                currWipe.DisplayWipeInfo();
                 break;
             case TaskState.WIPE_POLYGON:
 
@@ -233,6 +259,22 @@ public class TaskManager : MonoBehaviour
                 }
                 WipePoint.points.Clear();
                 WipePoint.uiPoint.SetActive(false);
+
+                if (currWipe.Shape == "square")
+                {
+                    currWipe.GoodPoints = squarePointManager.GetNumWiped();
+                    currWipe.BadPoints = squarePointManager.GetAntiparticlesWiped();
+                } else if (currWipe.Shape == "pentagon")
+                {
+                    currWipe.GoodPoints = pentagonPointManager.GetNumWiped();
+                    currWipe.BadPoints = pentagonPointManager.GetAntiparticlesWiped();
+                } else if (currWipe.Shape == "L")
+                {
+                    currWipe.GoodPoints = lPointManager.GetNumWiped();
+                    currWipe.BadPoints = lPointManager.GetAntiparticlesWiped();
+                }
+                currWipe.Time = sw.Elapsed;
+                currWipe.DisplayWipeInfo();
 
                 break;
             case TaskState.INSERT:
