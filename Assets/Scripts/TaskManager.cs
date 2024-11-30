@@ -15,6 +15,7 @@ struct WipeData
     public string Name;
     public int GoodPoints;
     public int BadPoints;
+    
 
     // Constructor
     public WipeData(string interfaceType, string shape, TimeSpan time, string name, int goodPoints, int badPoints)
@@ -28,14 +29,27 @@ struct WipeData
     }
 
     // Method to display wipe information
-    public void DisplayWipeInfo()
+    public string DisplayWipeInfo()
     {
-        UnityEngine.Debug.Log($"Name: {Name}");
+       
+        UnityEngine.Debug.Log($"Display Name: {Name}");
         UnityEngine.Debug.Log($"Interface Type: {InterfaceType}");
         UnityEngine.Debug.Log($"Shape: {Shape}");
         UnityEngine.Debug.Log($"Time: {Time.Hours} hours {Time.Minutes} minutes {Time.Seconds} seconds");
         UnityEngine.Debug.Log($"Good Points: {GoodPoints}");
         UnityEngine.Debug.Log($"Bad Points: {BadPoints}");
+        string row = $"{Name} {InterfaceType} {Shape} {Time.Minutes} {Time.Seconds} {GoodPoints} {BadPoints}";
+        return row;
+
+    }
+
+    public void Clear()
+    {
+        InterfaceType = "";
+        Shape = "";
+        Name = "name";
+        GoodPoints = 0;
+        BadPoints = 0;
     }
 }
 
@@ -67,9 +81,10 @@ struct InsertData
     }
 
     // Method to display insert information
-    public void DisplayInsertInfo()
+    public string DisplayInsertInfo()
     {
-        UnityEngine.Debug.Log($"Name: {Name}");
+        
+        UnityEngine.Debug.Log($"Insert Name: {Name}");
         UnityEngine.Debug.Log($"Constraint Type: {ConstraintType}");
         UnityEngine.Debug.Log($"Peg Size: {PegSize}");
         UnityEngine.Debug.Log($"Peg Color: {PegColor}");
@@ -78,6 +93,20 @@ struct InsertData
         UnityEngine.Debug.Log($"Resets: {Resets}");
         UnityEngine.Debug.Log($"Success: {Success}");
         UnityEngine.Debug.Log($"Constraint Mode Toggles: {ConstraintModeToggles}");
+        string row = $"{Name} {ConstraintType} {PegSize} {PegColor} {Time.Minutes} {Time.Seconds} {Collisions} {Resets} {Success} {ConstraintModeToggles}";
+       return row;
+    }
+
+    public void Clear()
+    {
+        ConstraintType = "";
+        PegSize = 0;
+        PegColor = "";
+        Name = "";
+        Collisions = 0;
+        Resets = 0;
+        Success = 0;
+        ConstraintModeToggles = 0;
     }
 }
 
@@ -90,6 +119,8 @@ public class TaskManager : MonoBehaviour
         WIPE_MANUAL,
         INSERT
     }
+
+    ROSConnection ros;
     public TaskState state = TaskState.IDLE;
     public MotionConstrainer motionConstrainer;
     public GameObject wipeSquare;
@@ -118,11 +149,13 @@ public class TaskManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        this.ros = ROSConnection.GetOrCreateInstance();
         wipes = new List<WipeData>();
         inserts = new List<InsertData>();
 
         sw = new Stopwatch();
         ROSConnection.GetOrCreateInstance().Subscribe<StringMsg>("unity/commands", CommandRecived);
+        ROSConnection.GetOrCreateInstance().RegisterPublisher<StringMsg>("unity/metric");
 
         wipeSquare.SetActive(false);
         wipePentagon.SetActive(false);
@@ -131,17 +164,33 @@ public class TaskManager : MonoBehaviour
         pegBox.SetActive(false);
         wipeSurface.SetActive(false);
 
-        CommandRecived(new StringMsg("manual"));
-        CommandRecived(new StringMsg("stop"));
+        //CommandRecived(new StringMsg("manual"));
+        // CommandRecived(new StringMsg("stop"));
     }
 
     public void CommandRecived(StringMsg msg)
     {
+
+        // manual -> insert manual
+        // wipe manual <shape> -> 
+        // wipe constrained <shape>
+        // stop
+        // c
+        // r
         string[] args = msg.data.Split(' ');
         //Debug.Log(msg.data);
 
 
         //Sorry about this v
+        if (args[0].Equals("c")) {
+            currInsert.Collisions++;
+            return;
+        }
+
+         if (args[0].Equals("r")) {
+            currInsert.Resets++;
+            return;
+        }
 
         if (args[0].Equals("stop")) goto Stop;
         //Start
@@ -214,6 +263,7 @@ public class TaskManager : MonoBehaviour
 
     Stop:
         sw.Stop();
+        UnityEngine.Debug.Log(state);
         switch (state)
         {
             case TaskState.IDLE:
@@ -241,7 +291,8 @@ public class TaskManager : MonoBehaviour
                 }
 
                 currWipe.Time = sw.Elapsed;
-                currWipe.DisplayWipeInfo();
+                 ros.Publish("unity/metric", new StringMsg(currWipe.DisplayWipeInfo()));
+                currWipe.Clear();
                 break;
             case TaskState.WIPE_POLYGON:
 
@@ -272,7 +323,8 @@ public class TaskManager : MonoBehaviour
                     currWipe.BadPoints = lPointManager.GetAntiparticlesWiped();
                 }
                 currWipe.Time = sw.Elapsed;
-                currWipe.DisplayWipeInfo();
+                ros.Publish("unity/metric", new StringMsg(currWipe.DisplayWipeInfo()));
+                currWipe.Clear();
 
                 break;
             case TaskState.INSERT:
@@ -280,8 +332,10 @@ public class TaskManager : MonoBehaviour
                 pegBox.SetActive(false);
                 currInsert.ConstraintModeToggles = motionConstrainer.GetNumToggles();
                 currInsert.Time = sw.Elapsed;
-                currInsert.DisplayInsertInfo();
+                
+                ros.Publish("unity/metric", new StringMsg(currInsert.DisplayInsertInfo()));
                 inserts.Add(currInsert);
+                currInsert.Clear();
                 motionConstrainer.startNone();
                 break;
         }
