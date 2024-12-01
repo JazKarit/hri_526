@@ -18,6 +18,8 @@ public class TFManager : MonoBehaviour
         public bool selectable = false;
     }
 
+    public bool lockPosition;
+
     public TFObject[] subscribers;
 
     public bool mute;
@@ -116,6 +118,7 @@ public class TFManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (lockPosition) return;
         if (TFMsg != null) {
             foreach (TFObject tfo in subscribers)
         {

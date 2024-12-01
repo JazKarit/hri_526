@@ -5728,7 +5728,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9814af1c1fef5ef4da7ba35f1eba2652, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zone: {fileID: 803779787}
+  zone: {fileID: 1538106572}
   constrained: 1
   mode: 0
   lastPos: {x: 0, y: 0, z: 0}
@@ -7327,9 +7327,9 @@ MonoBehaviour:
   squarePointManager: {fileID: 734403160}
   pentagonPointManager: {fileID: 1007396023}
   lPointManager: {fileID: 901045876}
-  positionSquare: {fileID: 0}
-  positionPentagon: {fileID: 0}
-  positionL: {fileID: 0}
+  positionSquare: {fileID: 855608874}
+  positionPentagon: {fileID: 822974831}
+  positionL: {fileID: 1215250363}
   EEF: {fileID: 886164647}
   pegBox: {fileID: 1452923349}
   wipeSurface: {fileID: 2077781942}
@@ -17402,7 +17402,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: fae8fdd07f935b145a6aee10013912db, type: 2}
+  - {fileID: 2100000, guid: 0e28f20a96f933a4288a6c16b115d437, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

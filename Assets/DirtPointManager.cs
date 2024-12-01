@@ -28,6 +28,7 @@ public class DirtPointManager : MonoBehaviour
     void Start()
     {
         isWiped = new bool[dirtParent.transform.childCount];
+        antiParticleIsWiped = new bool[antiParticleParent.transform.childCount];
         // eef = GameObject.Find("/EEF Controller");
         // wipeSurface = GameObject.Find("/Wipe Surface");
     }
@@ -60,22 +61,22 @@ public class DirtPointManager : MonoBehaviour
                 }   
                 break;
             case WipePointMode.SURFACE:
+            for (int j = 0; j < dirtParent.transform.childCount; j++) {
+                GameObject dirt = dirtParent.transform.GetChild(j).gameObject;
+                        SetWiped(j, false, dirt);
+                    }    
                 for (int i = 0; i < wipeSurface.GetComponent<MeshFilter>().mesh.triangles.Length; i+=3)
                 {
                     var trianglePt1 = (wipeSurface.transform.rotation * wipeSurface.GetComponent<MeshFilter>().mesh.vertices[wipeSurface.GetComponent<MeshFilter>().mesh.triangles[i]]) * wipeSurface.transform.localScale[0] + wipeSurface.transform.position;
                     var trianglePt2 = (wipeSurface.transform.rotation * wipeSurface.GetComponent<MeshFilter>().mesh.vertices[wipeSurface.GetComponent<MeshFilter>().mesh.triangles[i+1]]) * wipeSurface.transform.localScale[0] + wipeSurface.transform.position;
                     var trianglePt3 = (wipeSurface.transform.rotation * wipeSurface.GetComponent<MeshFilter>().mesh.vertices[wipeSurface.GetComponent<MeshFilter>().mesh.triangles[i+2]]) * wipeSurface.transform.localScale[0] + wipeSurface.transform.position;
-                
+                    
                     for (int j = 0; j < dirtParent.transform.childCount; j++) {
                         GameObject dirt = dirtParent.transform.GetChild(j).gameObject;
                         var distance = DistanceToTriangle.GetDistanceToTriangle(dirt.transform.position, trianglePt1, trianglePt2, trianglePt3);
                         if (distance < threshhold)
                         {
                             SetWiped(j, true, dirt);
-                        }
-                        else
-                        {
-                            SetWiped(j, false, dirt);
                         }
                     }    
 
@@ -126,6 +127,10 @@ public class DirtPointManager : MonoBehaviour
         for (int i = 0; i < dirtParent.transform.childCount; i++) {
             GameObject dirt = dirtParent.transform.GetChild(i).gameObject;
             SetWiped(i, false, dirt);
+        }
+
+        for (int i = 0; i < antiParticleIsWiped.Length; i++) {
+            antiParticleIsWiped[i] = false;
         }
     }
 

@@ -93,7 +93,7 @@ struct InsertData
         UnityEngine.Debug.Log($"Resets: {Resets}");
         UnityEngine.Debug.Log($"Success: {Success}");
         UnityEngine.Debug.Log($"Constraint Mode Toggles: {ConstraintModeToggles}");
-        string row = $"{Name} {ConstraintType} {PegSize} {PegColor} {Time.Minutes} {Time.Seconds} {Collisions} {Resets} {Success} {ConstraintModeToggles}";
+        string row = $"{Name} {ConstraintType} {Time.Minutes} {Time.Seconds} {Collisions} {Resets} {Success} {ConstraintModeToggles}";
        return row;
     }
 
@@ -180,10 +180,11 @@ public class TaskManager : MonoBehaviour
         string[] args = msg.data.Split(' ');
         //Debug.Log(msg.data);
 
-
+        
         //Sorry about this v
         if (args[0].Equals("c")) {
             currInsert.Collisions++;
+            UnityEngine.Debug.Log("bump");
             return;
         }
 
@@ -192,12 +193,16 @@ public class TaskManager : MonoBehaviour
             return;
         }
 
+        bool sendData = true;
+
         if (args[0].Equals("stop")) goto Stop;
+        if (args[0].Equals("discard")) goto Discard;
         //Start
 
         if (args[0].Equals("wipe")) goto Wipe;
         //Insertion
-        if (args[0].Equals("manual")) goto Insertion_Manual;
+        if (args[1].Equals("manual")) goto Insertion_Manual;
+
 
         //Automatic insertion
         motionConstrainer.constrained = true;
@@ -241,26 +246,34 @@ public class TaskManager : MonoBehaviour
                 currWipe.Shape = "square";
                 wipeSquare.SetActive(true);
                 wipeSquare.transform.position = positionSquare.transform.position;
-                wipeSquare.GetComponent<DirtPointManager>().Unwipe();
+                wipeSquare.transform.rotation = positionSquare.transform.rotation;
                 wipeSquare.GetComponent<DirtPointManager>().mode = wm;
+                wipeSquare.GetComponent<DirtPointManager>().Unwipe();
                 break;
             case "pentagon":
                 currWipe.Shape = "pentagon";
                 wipePentagon.SetActive(true);
                 wipePentagon.transform.position = positionPentagon.transform.position;
-                wipePentagon.GetComponent<DirtPointManager>().Unwipe();
+                wipePentagon.transform.rotation = positionPentagon.transform.rotation;
                 wipePentagon.GetComponent<DirtPointManager>().mode = wm;
+                wipePentagon.GetComponent<DirtPointManager>().Unwipe();
+                
                 break;
             case "l":
                 currWipe.Shape = "L";
                 wipeL.SetActive(true);
                 wipeL.transform.position = positionL.transform.position;
-                wipeL.GetComponent<DirtPointManager>().Unwipe();
+                wipeL.transform.rotation = positionL.transform.rotation;
                 wipeL.GetComponent<DirtPointManager>().mode = wm;
+                wipeL.GetComponent<DirtPointManager>().Unwipe();
+                
                 break;
         }
         return;
 
+
+    Discard:
+    sendData = false;
     Stop:
         sw.Stop();
         UnityEngine.Debug.Log(state);
@@ -291,7 +304,7 @@ public class TaskManager : MonoBehaviour
                 }
 
                 currWipe.Time = sw.Elapsed;
-                 ros.Publish("unity/metric", new StringMsg(currWipe.DisplayWipeInfo()));
+                if (sendData) ros.Publish("unity/metric", new StringMsg(currWipe.DisplayWipeInfo()));
                 currWipe.Clear();
                 break;
             case TaskState.WIPE_POLYGON:
@@ -323,7 +336,7 @@ public class TaskManager : MonoBehaviour
                     currWipe.BadPoints = lPointManager.GetAntiparticlesWiped();
                 }
                 currWipe.Time = sw.Elapsed;
-                ros.Publish("unity/metric", new StringMsg(currWipe.DisplayWipeInfo()));
+                if (sendData) ros.Publish("unity/metric", new StringMsg(currWipe.DisplayWipeInfo()));
                 currWipe.Clear();
 
                 break;
@@ -333,7 +346,7 @@ public class TaskManager : MonoBehaviour
                 currInsert.ConstraintModeToggles = motionConstrainer.GetNumToggles();
                 currInsert.Time = sw.Elapsed;
                 
-                ros.Publish("unity/metric", new StringMsg(currInsert.DisplayInsertInfo()));
+                if (sendData) ros.Publish("unity/metric", new StringMsg(currInsert.DisplayInsertInfo()));
                 inserts.Add(currInsert);
                 currInsert.Clear();
                 motionConstrainer.startNone();
