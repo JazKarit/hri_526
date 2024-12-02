@@ -1,5 +1,5 @@
 # Set up Colocated Workspace in Unity
-Follow the steps in the [parent repository](https://github.com/lagenuina/hololens_unity_asa) to configure ASA before beginning these steps.
+Install this project and open in Unity editor.
 
 ## ROS
 After installing the [Unity Ros Hub](https://github.com/Unity-Technologies/ROS-TCP-Endpoint) configure the IP of your ROS computer in the Robotics setting tab.
@@ -8,13 +8,25 @@ After installing the [Unity Ros Hub](https://github.com/Unity-Technologies/ROS-T
 
 
 ## Calibration
-Similar to the parent repo a menu can be summoned by raising your left hand. Uppon pressing the create anchor button the project will begin searching for the calibration QR code. Once found a frame will be drawn on the QR code. If this position is correct press the "Create Anchor" button. The resulting anchor ID will be printed on the console as long as the device is plugged into the computer. To find the anchor ID, go to the output log and searched for the term "saved" using ctrl+F.
+Similar to the parent repo a menu can be summoned by raising your left hand. Uppon pressing the create anchor button the project will begin searching for the calibration QR code. Once found a frame will be drawn on the QR code. If this position is correct press the "Create Anchor" button. The position will now be cached for the remainder of this session.
 
-![image](https://github.com/dsaliba/hololens_unity_workspace/assets/69019487/19903e54-48e5-452b-8a2f-93b443ff3325)
+1. Publish the command "insert manual" to the /unity/commands topic to put the system into manual insertion mode.
+2. Place the peg box in view of cameras
+3. With the ROS nodes open, use WASDQE to align the box hologram with the peg box
+4. With the ROS nodes open use JKLIUO to align the robot frames with the locobot
 
+### Calibrating End Effector Teleop
+1. Publish the command "insert manual" to the /unity/commands topic to put the system into manual insertion mode.
+2. Use the voice control "sync" to align the end effector controller with the robot gripper.
+3. Use the voice command "manual" to arm teleop control.
+4. Move the end effector away from the robot
+5. Using the left hand menu press the calibration checkbox enter calibration mode
+6. Align the end effector controller with the robot gripper
+7. Using the left hand menu press the calibration checkbox exit calibration mode
+8. Use the voice command "manual" to rearm teleop control
 
-Feed this anchor ID into the "Anchor ID" field of the ASA Script.
-Upon rebuilding the unity and ROS enviornments should be succesfully colocated.
+The system is now fully calibrated.
+
 
 ## Creating Tracked Objects
 ![image](https://github.com/dsaliba/hololens_unity_workspace/assets/69019487/340a50ef-4c94-4880-800c-13216e7e6b9f)
@@ -35,6 +47,8 @@ The "Thresh" property adjusts the theshold at which an object is considered stop
 ![image](https://github.com/dsaliba/hololens_unity_workspace/assets/69019487/afdb71fb-1f7e-4ff6-89b2-e029077ba30e)
 
 The + icon under the OnStop list can be used to add unity events to invoke when the object is stopped. By adding a script with public methods to an object you can call the methods via this invoke list.
+
+
 
 
 
