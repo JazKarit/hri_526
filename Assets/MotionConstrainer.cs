@@ -24,7 +24,9 @@ public class MotionConstrainer : MonoBehaviour
     private bool isColliding = false;
     int count = 0;
 
-    private int numToggles = 0;
+    private int glideToggles;
+    private int insertToggles;
+    private int rotateToggles;
 
 
     // Start is called before the first frame update
@@ -126,9 +128,22 @@ public class MotionConstrainer : MonoBehaviour
         count += 3;
     }
 
-    public int GetNumToggles()
-    {
-        return numToggles;
+    public int GetAndClearRotateToggles() {
+        int temp = this.rotateToggles;
+        this.rotateToggles = 0;
+        return temp;
+    }
+
+    public int GetAndClearGlideToggles() {
+        int temp = this.glideToggles;
+        this.glideToggles = 0;
+        return temp;
+    }
+
+    public int GetAndClearInsertToggles() {
+        int temp = this.insertToggles;
+        this.insertToggles = 0;
+        return temp;
     }
 
     public static bool IsPointInTriangle(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 point)
@@ -174,7 +189,7 @@ public class MotionConstrainer : MonoBehaviour
     public void startGlide()
     {
         if (!constrained) return;
-        numToggles++;
+        glideToggles++;
         transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
         transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
         transform.GetChild(1).GetChild(2).gameObject.SetActive(true);
@@ -184,7 +199,7 @@ public class MotionConstrainer : MonoBehaviour
     public void startInsert()
     {
         if (!constrained) return;
-        numToggles++;
+        insertToggles++;
         transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
         transform.GetChild(1).GetChild(1).gameObject.SetActive(true);
         transform.GetChild(1).GetChild(2).gameObject.SetActive(false);
@@ -194,7 +209,7 @@ public class MotionConstrainer : MonoBehaviour
     public void startRotation()
     {
         if (!constrained) return;
-        numToggles++;
+        rotateToggles++;
         transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
         transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
         transform.GetChild(1).GetChild(2).gameObject.SetActive(false);
@@ -202,7 +217,6 @@ public class MotionConstrainer : MonoBehaviour
     }
 
     public void startNone() {
-        numToggles++;
         transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
         transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
         transform.GetChild(1).GetChild(2).gameObject.SetActive(false);

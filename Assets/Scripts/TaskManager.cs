@@ -64,10 +64,12 @@ struct InsertData
     public int Collisions;
     public int Resets;
     public int Success;
-    public int ConstraintModeToggles;
+    public int GlideToggles;
+    public int InsertToggles;
+    public int RotateToggles;
 
     // Constructor
-    public InsertData(string constraintType, int pegSize, string pegColor, string name, TimeSpan time, int collisions, int resets, int success, int constraintModeToggles)
+    public InsertData(string constraintType, int pegSize, string pegColor, string name, TimeSpan time, int collisions, int resets, int success, int glideToggles, int insertToggles, int rotateToggles)
     {
         ConstraintType = constraintType;
         PegSize = pegSize;
@@ -77,7 +79,9 @@ struct InsertData
         Collisions = collisions;
         Resets = resets;
         Success = success;
-        ConstraintModeToggles = constraintModeToggles;
+        this.GlideToggles = glideToggles;
+        this.InsertToggles = insertToggles;
+        this.RotateToggles = rotateToggles;
     }
 
     // Method to display insert information
@@ -92,8 +96,10 @@ struct InsertData
         UnityEngine.Debug.Log($"Collisions: {Collisions}");
         UnityEngine.Debug.Log($"Resets: {Resets}");
         UnityEngine.Debug.Log($"Success: {Success}");
-        UnityEngine.Debug.Log($"Constraint Mode Toggles: {ConstraintModeToggles}");
-        string row = $"{Name} {ConstraintType} {Time.Minutes} {Time.Seconds} {Collisions} {Resets} {Success} {ConstraintModeToggles}";
+        UnityEngine.Debug.Log($"Glide Mode Toggles: {GlideToggles}");
+        UnityEngine.Debug.Log($"Insert Mode Toggles: {InsertToggles}");
+        UnityEngine.Debug.Log($"Rotate Mode Toggles: {RotateToggles}");
+        string row = $"{Name} {ConstraintType} {Time.Minutes} {Time.Seconds} {Collisions} {Resets} {Success} {GlideToggles} {InsertToggles} {RotateToggles}";
        return row;
     }
 
@@ -106,7 +112,9 @@ struct InsertData
         Collisions = 0;
         Resets = 0;
         Success = 0;
-        ConstraintModeToggles = 0;
+        GlideToggles = 0;
+        InsertToggles = 0;
+        RotateToggles = 0;
     }
 }
 
@@ -185,6 +193,32 @@ public class TaskManager : MonoBehaviour
         if (args[0].Equals("c")) {
             currInsert.Collisions++;
             UnityEngine.Debug.Log("bump");
+            return;
+        }
+
+
+        if (args[0].Equals("g")) {
+            motionConstrainer.startGlide();
+            return;
+        }
+
+        if (args[0].Equals("i")) {
+            motionConstrainer.startInsert();
+            return;
+        }
+
+        if (args[0].Equals("o")) {
+            motionConstrainer.startRotation();
+            return;
+        }
+
+        if (args[0].Equals("p")) {
+            EEF.GetComponent<TeleopEEF>().Pinch();
+            return;
+        }
+
+        if (args[0].Equals("k")) {
+            EEF.GetComponent<TeleopEEF>().Release();
             return;
         }
 
@@ -343,7 +377,9 @@ public class TaskManager : MonoBehaviour
             case TaskState.INSERT:
                 EEF.SetActive(false);
                 pegBox.SetActive(false);
-                currInsert.ConstraintModeToggles = motionConstrainer.GetNumToggles();
+                currInsert.GlideToggles = motionConstrainer.GetAndClearGlideToggles();
+                currInsert.InsertToggles = motionConstrainer.GetAndClearInsertToggles();
+                currInsert.RotateToggles = motionConstrainer.GetAndClearRotateToggles();
                 currInsert.Time = sw.Elapsed;
                 
                 if (sendData) ros.Publish("unity/metric", new StringMsg(currInsert.DisplayInsertInfo()));
